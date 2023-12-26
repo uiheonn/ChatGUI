@@ -25,6 +25,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		contentPane.add(status, BorderLayout.SOUTH);
 		ChatMessageReceiver chatReceiver = new ChatMessageReceiver(this);
 		// 클라이언트를 매개변수로 전달해 생성자 호출
+		// 1
 		chatReceiver.setMessageReceiver(chatPanel);
 	
 		chatWindow = new JFrame("Minimal Chat - Concept Proof");
