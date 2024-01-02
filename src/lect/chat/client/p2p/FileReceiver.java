@@ -6,6 +6,7 @@ import java.util.Vector;
 import lect.chat.client.p2p.event.FileProgressListener;
 
 public class FileReceiver implements Runnable {
+
 	Socket socket;
 	InputStream in;
 	static final File downloadedDir = new File("download");
@@ -17,6 +18,8 @@ public class FileReceiver implements Runnable {
 	public static void addFileProgressListener(FileProgressListener l) {
 		listeners.add(l);
 	}
+	
+	@Override
 	public void run() {
 		int byteRead;
 		String fileName;

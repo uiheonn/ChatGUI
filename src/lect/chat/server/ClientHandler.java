@@ -1,3 +1,4 @@
+
 package lect.chat.server;
 import java.net.*;
 import java.io.*;
@@ -17,6 +18,39 @@ public class ClientHandler implements Runnable, MessageHandler {
 		// 그룹매니저에 사용자 추가
 		GroupManager.addMessageHandler(this);
 	}
+	
+	@Override
+	public String getId() {
+		return id;//socket.getRemoteSocketAddress().toString();
+	}
+	
+	@Override
+	public String getName() {
+		return chatName;
+	}
+	
+	@Override
+	public String getFrom() {
+		return host;
+	}
+	
+	// 그룹매니저에서 아래 메소드들 호출해 사용함
+	@Override
+	public void sendMessage(String msg) {
+		pw.println(msg);
+	}
+	
+	@Override
+	public String getMessage() throws IOException {
+		return br.readLine();
+	}
+	
+	@Override
+	public void close() {
+		try { socket.close(); } catch(IOException e) { e.printStackTrace();}
+	}
+	
+	@Override
 	public void run() {
 		String msg;
 		try {
@@ -38,26 +72,6 @@ public class ClientHandler implements Runnable, MessageHandler {
 			close();
 		}
 		System.out.println("Terminating ClientHandler");
-	}
-	
-	// 그룹매니저에서 아래 메소드들 호출해 사용함
-	public void sendMessage(String msg) {
-		pw.println(msg);
-	}
-	public String getMessage() throws IOException {
-		return br.readLine();
-	}
-	public void close() {
-		try { socket.close(); } catch(IOException e) { e.printStackTrace();}
-	}
-	public String getId() {
-		return id;//socket.getRemoteSocketAddress().toString();
-	}
-	public String getFrom() {
-		return host;
-	}
-	public String getName() {
-		return chatName;
 	}
 	
 	public void processMessageByCommandType(String msg) {
