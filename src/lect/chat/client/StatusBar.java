@@ -26,9 +26,7 @@ public class StatusBar extends JPanel implements ChatStatusListener, FileProgres
 		if(statusBar == null) statusBar = new StatusBar();
 		return statusBar;
 	}
-	public void chatStatusChanged(Object obj) {
-		statusText.setText(obj.toString());
-	}
+	
 	public void fileProgressed(String msg, int progress) {
 		progBar.setValue(progress);
 		progBar.setString(msg);
@@ -43,5 +41,9 @@ public class StatusBar extends JPanel implements ChatStatusListener, FileProgres
 		remove(progBar);
 		validate();
 		repaint();
+	}
+	@Override
+	public void chatStatusChanged(Object obj) {
+		statusText.setText(obj.toString());
 	}
 }
