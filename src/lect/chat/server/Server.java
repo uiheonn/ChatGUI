@@ -1,9 +1,9 @@
 package lect.chat.server;
 import java.io.IOException;
 import java.net.*;
-public class ChatServer implements Runnable {
+public class Server implements Runnable {
 	ServerSocket ss;
-	public ChatServer() throws IOException {
+	public Server() throws IOException {
 		// 소켓 초기화하고 포트 설정
 		ss = new ServerSocket(1223);
 		System.out.printf("ChatServer[%s] is listening on port 1223\n", InetAddress.getLocalHost().getHostAddress());
