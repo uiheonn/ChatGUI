@@ -11,8 +11,8 @@ import java.util.*;
 public class ChatPanel extends JPanel implements MessageReceiver, ActionListener, ChatSocketListener {
 	JTextField chatTextField;
 	ChatTextPane chatDispArea;
-	ChatUserList userList;
-	CommandButton connectDisconnect;
+	UserList userList;
+	ConnectButton connectDisconnect;
 	JButton whisper;
 	PrintWriter writer;
 	ChatConnector connector;
@@ -30,9 +30,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	private void initUI() {
 		chatTextField = new JTextField();
 		chatDispArea = new ChatTextPane();//new ChatTextArea();
-		userList = new ChatUserList();
+		userList = new UserList();
 		
-		connectDisconnect = new CommandButton();
+		connectDisconnect = new ConnectButton();
 		whisper = new JButton("Whisper");
 		
 		chatTextField.setEnabled(false);
@@ -95,6 +95,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		add(whisper, c);
 	}
 	
+	@Override
 	public void messageArrived(String msg) {
 		// 메세지 출력
 		char command = ChatCommandUtil.getCommand(msg);
@@ -112,9 +113,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			case ChatCommandUtil.USER_LIST:
 				displayUserList(msg);
 				break;
-				default:
-					break;
-		}
+			default:
+				break;
+				}
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -129,13 +130,13 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			chatTextField.setText(""); // 입력창 비우기
 			// 일반 메세지 출력
 		} else if(sourceObj == connectDisconnect) { // 연결 상태면 해제, 해제 상태면 연결 실행
-			if(e.getActionCommand().equals(CommandButton.CMD_CONNECT)) {
+			if(e.getActionCommand().equals(ConnectButton.CMD_CONNECT)) {
 				if(connector.connect()) {
-					connectDisconnect.toButton(CommandButton.CMD_DISCONNECT);
+					connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
 				}
 			} else {//when clicked Disconnect button
 				connector.disConnect();
-				connectDisconnect.toButton(CommandButton.CMD_CONNECT);
+				connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 			}
 			// 연결 해제 버튼 클릭시 호출
 		} else {//whisper button
@@ -158,7 +159,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		chatDispArea.setEnabled(false);
 		whisper.setEnabled(false);
 		userList.setEnabled(false);
-		connectDisconnect.toButton(CommandButton.CMD_CONNECT);
+		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 	}
 	
 	public void socketConnected(Socket s) throws IOException { 
@@ -184,7 +185,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			if(connector.getId().equals(nameWithIdHost[1])) continue;
 			list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2]));
 		}
-		userList.addNewUsers(list);
+		userList.addNewChatUsers(list);
 	}
 	
 	private void sendMessage(char command, String msg) {
@@ -200,4 +201,5 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		return msgBuilder.toString();
 		
 	}
+
 }

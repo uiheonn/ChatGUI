@@ -13,8 +13,8 @@ import java.util.List;
 import lect.chat.client.p2p.FileSender;
 
 @SuppressWarnings("serial")
-public class ChatUserList extends JList {
-	public ChatUserList() {
+public class UserList extends JList {
+	public UserList() {
 		// 사용자 목록 표시를 위함
 		super(new DefaultListModel());
 		this.setCellRenderer(new CellRenderer()); // 목록 스타일 설정
@@ -25,7 +25,7 @@ public class ChatUserList extends JList {
 		this.setTransferHandler(new UserListTransferHandler()); // 드래그앤 드롭 지원을 위해 설정
 		
 	}
-	public void addNewUsers(ArrayList <ChatUser> users) {
+	public void addNewChatUsers(ArrayList <ChatUser> users) {
 		// 데이터 받아서 목록에 하나씩 추가
 		DefaultListModel newModel = new DefaultListModel();
 		for(ChatUser user: users) {
@@ -99,7 +99,7 @@ public class ChatUserList extends JList {
 			List<File> data;
 			try {
 				data = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
-				ChatUserList.this.transferFileDropped(data); // 파일 전송 수행
+				UserList.this.transferFileDropped(data); // 파일 전송 수행
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;

@@ -14,24 +14,24 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 	private Socket socket;
 	private String chatName;
 	private String id;
-	private ArrayList <ChatSocketListener> sListeners = new ArrayList<ChatSocketListener>();
+	private ArrayList <ChatSocketListener> socketListeners = new ArrayList<ChatSocketListener>();
 	private JFrame chatWindow;
 	ChatClient() {
 		id = new java.rmi.server.UID().toString();
-		JPanel contentPane = new JPanel(new BorderLayout());
-		contentPane.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+		JPanel contentPanel = new JPanel(new BorderLayout());
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
 		ChatPanel chatPanel = new ChatPanel(this);
 		chatPanel.setBorder(BorderFactory.createEtchedBorder());
-		StatusBar status = StatusBar.getStatusBar();
-		status.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1, 2, 2, 2)));
-		contentPane.add(status, BorderLayout.SOUTH);
-		ChatMessageReceiver chatReceiver = new ChatMessageReceiver(this);
-		chatReceiver.setMessageReceiver(chatPanel);
+		StatusBar statusBar = StatusBar.getStatusBar();
+		statusBar.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1, 2, 2, 2)));
+		contentPanel.add(statusBar, BorderLayout.SOUTH);
+		ChatMessageReceiver messageReceiver = new ChatMessageReceiver(this);
+		messageReceiver.setMessageReceiver(chatPanel);
 	
 		chatWindow = new JFrame("Minimal Chat - Concept Proof");
-		contentPane.add(chatPanel);
+		contentPanel.add(chatPanel);
 		
-		chatWindow.setContentPane(contentPane);
+		chatWindow.setContentPane(contentPanel);
 		chatWindow.setSize(450, 350);
 		
 		chatWindow.setLocationRelativeTo(null);
@@ -39,10 +39,10 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		chatWindow.addWindowListener(this);
 		
 		this.addChatSocketListener(chatPanel);
-		this.addChatSocketListener(chatReceiver);
+		this.addChatSocketListener(messageReceiver);
 		try {
 			P2P.getInstance().startService();
-			// P2P �겢�씪�씠�뼵�듃留덈떎 �븯�굹�뵫 �냼耳볤낵 �뒪�젅�뱶留뚮뱾湲�
+			// P2P 클라이언트마다 하나씩 소켓과 스레드만들기
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -55,8 +55,8 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 
 		try {
 			socket = new Socket("210.125.213.7", 1223);
-			for(ChatSocketListener lsnr: sListeners) {
-				lsnr.socketConnected(socket);
+			for(ChatSocketListener socketListener: socketListeners) {
+				socketListener.socketConnected(socket);
 			}
 			return true;
 		} catch(IOException e) {
@@ -84,8 +84,8 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 	@Override
 	public void invalidateSocket() {
 		disConnect();
-		for(ChatSocketListener lsnr: sListeners) {
-			lsnr.socketClosed();
+		for(ChatSocketListener socketListener: socketListeners) {
+			socketListener.socketClosed();
 		}
 	}
 	@Override
@@ -97,11 +97,11 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		return id;
 	}
 	
-	public void addChatSocketListener(ChatSocketListener lsnr) {
-		sListeners.add(lsnr);
+	public void addChatSocketListener(ChatSocketListener socketListener) {
+		socketListeners.add(socketListener);
 	}
-	public void removeChatSocketListener(ChatSocketListener lsnr) {
-		sListeners.remove(lsnr);
+	public void removeChatSocketListener(ChatSocketListener socketListener) {
+		socketListeners.remove(socketListener);
 	}
 	public void windowClosing(WindowEvent e) {
 		disConnect();

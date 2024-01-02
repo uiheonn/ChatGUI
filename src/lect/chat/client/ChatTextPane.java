@@ -75,7 +75,7 @@ public class ChatTextPane extends JTextPane implements FileProgressListener{
 			e.printStackTrace();
 		}
 	}
-	// !!!! chatTextArea에 같은 내용 메소드 구현되어있음 !!!!!!
+	
 	public void setRecordRemovedMsg(boolean rrm) {
 		recordRemovedMsg = rrm;
 	}
