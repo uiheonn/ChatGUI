@@ -98,7 +98,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	@Override
 	public void messageArrived(String msg) {
 		// 메세지 출력
-		char command = ChatCommandUtil.getCommand(msg);
+		char command = ChatCommandUtil.getCommandType(msg);
 		System.out.println(msg);
 		msg = msg.replaceFirst("\\[{1}[a-z]\\]{1}", "");
 		// 메세지의 첫글자 추출해 switch문에서 해당하는 명령 실행
