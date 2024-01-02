@@ -9,7 +9,7 @@ public class ChatCommandUtil {
 	public static final char EXIT_ROOM = 'f';
 	public static final char UNKNOWN = 'z';
 	private ChatCommandUtil(){}
-	public static char getCommand(String msg) {
+	public static char getCommandType(String msg) {
 		if(msg.matches("\\[{1}[a-z]\\]{1}.*")) {
 			return msg.charAt(1);
 		} else {

@@ -20,7 +20,7 @@ public class GroupManager {
 			mh.sendMessage(createMessage(ChatCommandUtil.EXIT_ROOM, handler.getName() + " has just left chat room"));
 		}
 	}
-	public static void broadcastMessage(String msg) {
+	public static void broadcastMessageAllClient(String msg) {
 		// 모든 사용자에게 메세지 전송
 		for(MessageHandler handler: clientGroup) {
 			handler.sendMessage(createMessage(ChatCommandUtil.NORMAL, msg));
@@ -33,7 +33,7 @@ public class GroupManager {
 		}
 		clientGroup.clear();
 	}
-	public static void broadcastNewChatter(MessageHandler newHandler) {
+	public static void broadcastNewChatterAllClient(MessageHandler newHandler) {
 		// 새로운 사용자 입장시 모든 사용자에게 알림
 		StringBuilder users = new StringBuilder();
 		MessageHandler handler;

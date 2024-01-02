@@ -26,7 +26,7 @@ public class ClientHandler implements Runnable, MessageHandler {
 				if(msg == null) {
 					break;
 				}
-				processMessage(msg);
+				processMessageByCommandType(msg); // 명령어 타입에 따라 메시지를 처리
 				System.out.println("lineRead: " + msg);
 				//GroupManager.broadcastMessage(msg);
 			}
@@ -60,20 +60,20 @@ public class ClientHandler implements Runnable, MessageHandler {
 		return chatName;
 	}
 	
-	public void processMessage(String msg) {
-		char command = ChatCommandUtil.getCommand(msg);
+	public void processMessageByCommandType(String msg) {
+		char command = ChatCommandUtil.getCommandType(msg);
 		msg = msg.replaceFirst("\\[{1}[a-z]\\]{1}", "");
 		// 메세지 형식에 따라 출력
 		switch(command) {
 		case ChatCommandUtil.NORMAL:
-			GroupManager.broadcastMessage(String.format("%s: %s", chatName, msg));
+			GroupManager.broadcastMessageAllClient(String.format("%s: %s", chatName, msg));
 			break;
 		case ChatCommandUtil.INIT_ALIAS:
 		// 모든 클라이언트에게 처음 연결된 사용자 입장 알림
-			String nameWithId [] = msg.split("\\|"); 
+			String nameWithId [] = msg.split("\\|");
 			chatName = nameWithId[0];
 			id = nameWithId[1];
-			GroupManager.broadcastNewChatter(this);
+			GroupManager.broadcastNewChatterAllClient(this);
 			break;
 		case ChatCommandUtil.WHISPER:
 		// 귓속말이면 해당 클라이언트와 전송한 클라이언트에게만 메세지 전송

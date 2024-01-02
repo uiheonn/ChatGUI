@@ -22,7 +22,7 @@ public class ChatServer implements Runnable {
 		Socket s = null;
 		try {			
 			while(true) {
-				// 클라이언트 접속 대기 
+				// 클라이언트 접속 대기
 				s = ss.accept();
 				System.out.format("Client[%s] accepted\n", s.getInetAddress().getHostName());
 				// 접속하면 클라이언트 핸들러 생성, 스레드 생성 및 실행
@@ -41,7 +41,7 @@ public class ChatServer implements Runnable {
 	public static void main(String [] args) {
 		// 스레드로 서버 생성해 실행
 		try {
-			Runnable r = new ChatServer();
+			Runnable r = new Server();
 			new Thread(r).start();
 		} catch(IOException e) {
 			System.out.println("Failed to start server: " + e.getMessage());
