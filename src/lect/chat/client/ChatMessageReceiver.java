@@ -11,9 +11,23 @@ public class ChatMessageReceiver implements Runnable, ChatSocketListener {
 		connector = c;
 		// 커넥터는 클라이언트임
 	}
+	
 	public void setMessageReceiver(MessageReceiver r) {
 		receiver = r;
 	}
+	
+	@Override
+	public void socketClosed() {
+	}
+	
+	@Override
+	public void socketConnected(Socket s) throws IOException {
+		reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		new Thread(this).start();
+		// 소켓에 버퍼 연결해 스레드 생성후 호출
+	}
+	
+	@Override
 	public void run() {
 		String msg;
 		try {
@@ -33,14 +47,6 @@ public class ChatMessageReceiver implements Runnable, ChatSocketListener {
 		} finally  {
 			connector.invalidateSocket();
 			// 소켓 닫기
-		}
-		
-	}
-	
-	public void socketClosed() { }
-	public void socketConnected(Socket s) throws IOException {
-		reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		new Thread(this).start();
-		// 소켓에 버퍼 연결해 스레드 생성후 호출
+		}		
 	}
 }
