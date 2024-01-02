@@ -117,7 +117,29 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				break;
 				}
 	}
-	
+
+	@Override
+	public void socketClosed() {
+		//  소켓 닫히면 호출되어 UI이 비활성하고 연결 버튼으로 변경됨
+		chatTextField.setEnabled(false);
+		chatDispArea.setEnabled(false);
+		whisper.setEnabled(false);
+		userList.setEnabled(false);
+		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
+	}
+
+	@Override
+	public void socketConnected(Socket s) throws IOException {
+		// 소켓 연결되면 출력스트림 생성 및 UI 활성화, 사용자 정보 초기화해 서버 전송
+		writer = new PrintWriter(s.getOutputStream(), true);
+		writer.println(createMessage(ChatCommandUtil.INIT_ALIAS, String.format("%s|%s", connector.getName(), connector.getId()) ));
+		chatTextField.setEnabled(true);
+		chatDispArea.setEnabled(true);
+		whisper.setEnabled(true);
+		userList.setEnabled(true);
+	}
+
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		// 메세지 입력, 연결 및 해제, 귓속말등 버튼 이벤트 클릭시 호출됨
 		Object sourceObj = e.getSource();
@@ -151,25 +173,6 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			chatTextField.setText("");
 			// 귓속말 버튼 클릭시 호출
 		}
-	}
-	
-	public void socketClosed() { 
-		//  소켓 닫히면 호출되어 UI이 비활성하고 연결 버튼으로 변경됨
-		chatTextField.setEnabled(false);
-		chatDispArea.setEnabled(false);
-		whisper.setEnabled(false);
-		userList.setEnabled(false);
-		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
-	}
-	
-	public void socketConnected(Socket s) throws IOException { 
-		// 소켓 연결되면 출력스트림 생성 및 UI 활성화, 사용자 정보 초기화해 서버 전송
-		writer = new PrintWriter(s.getOutputStream(), true);
-		writer.println(createMessage(ChatCommandUtil.INIT_ALIAS, String.format("%s|%s", connector.getName(), connector.getId()) ));
-		chatTextField.setEnabled(true);
-		chatDispArea.setEnabled(true);
-		whisper.setEnabled(true);
-		userList.setEnabled(true);
 	}
 	
 	private void displayUserList(String users) {
