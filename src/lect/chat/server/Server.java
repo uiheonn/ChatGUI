@@ -18,6 +18,8 @@ public class Server implements Runnable {
 			}
 		});
 	}
+	
+	@Override
 	public void run() {
 		Socket s = null;
 		try {			
@@ -33,11 +35,13 @@ public class Server implements Runnable {
 		}
 		System.out.println("ChatServer shut down");
 	}
+	
 	public void cleanup() throws IOException {
 		// 서버 정리
 		ss.close();
 		GroupManager.closeAllMessageHandlers();
 	}
+	
 	public static void main(String [] args) {
 		// 스레드로 서버 생성해 실행
 		try {

@@ -7,17 +7,20 @@ public class P2P implements Runnable {
 	private static P2P instance;
 	
 	private P2P () {}
+	
 	public static P2P getInstance() {
 		if(instance == null) instance = new P2P();
 		return instance;
 		// 싱글톤 패턴
 	}
+	
 	public void startService() throws IOException {
 		if(ss != null && ss.isBound()) return;
 		ss = new ServerSocket(PORT);
 		new Thread(this).start();
 		// 소켓없으면 생성, 스레드 생성해 호출
 	}
+	
 	public void stopService() {
 		try {
 			ss.close();
@@ -26,6 +29,8 @@ public class P2P implements Runnable {
 			// 소켓 닫기
 		}
 	}
+	
+	@Override
 	public void run () {
 		Socket s;
 		try {
@@ -40,4 +45,5 @@ public class P2P implements Runnable {
 			try { if(ss != null) ss.close(); } catch(Exception e) {}
 		}
 	}
+
 }
