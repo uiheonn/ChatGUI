@@ -15,6 +15,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	ConnectButton connectDisconnect;
 	JButton whisper;
 	JButton save;
+	JButton init;
 	PrintWriter writer;
 	ChatConnector connector;
 	StringBuilder msgBuilder = new StringBuilder();
@@ -39,7 +40,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		userList = new UserList();
 		
 		connectDisconnect = new ConnectButton();
-		whisper = new JButton("Whisper");
+		whisper = new JButton("W");
+		init = new JButton("I");
+		save = new JButton("S");
 		
 		chatTextField.setEnabled(false);
 		chatDispArea.setEditable(false);
@@ -55,7 +58,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		c = new GridBagConstraints();
 		titleLabel = new JLabel("List of Users", JLabel.CENTER);
 		c.gridy = 0;
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridwidth = 2;
 		c.insets = new Insets(2,2,2,2);
 		add(titleLabel, c);
@@ -73,7 +76,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		c = new GridBagConstraints();
 		c.gridy = 1;
 		c.gridx = 1;
-		c.gridwidth = 2;
+		c.gridwidth = 4;
 		c.weightx = 0.1;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.LINE_START;
@@ -91,7 +94,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		c = new GridBagConstraints();
 		c.gridy = 2;
 		c.gridx = 1;
-		c.anchor = GridBagConstraints.LINE_START;
+		c.anchor = GridBagConstraints.CENTER;
 		add(connectDisconnect, c);
 		
 		c = new GridBagConstraints();
@@ -99,6 +102,19 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		c.gridx = 2;
 		c.anchor = GridBagConstraints.CENTER;
 		add(whisper, c);
+		
+		c = new GridBagConstraints();
+		c.gridy = 2;
+		c.gridx = 3;
+		c.anchor = GridBagConstraints.CENTER;
+		add(init, c);
+		
+		c = new GridBagConstraints();
+		c.gridy = 2;
+		c.gridx = 4;
+		c.anchor = GridBagConstraints.CENTER;
+		add(save, c);
+		
 	}
 	
 	@Override
