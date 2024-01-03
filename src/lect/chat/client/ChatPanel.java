@@ -27,6 +27,11 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		// UI 생성
 	}
 	
+	public void clearText() {
+		chatDispArea.setText("");
+		writer.println(createMessage(ChatCommandUtil.INIT_ALIAS, String.format("%s|%s", connector.getName(), connector.getId()) ));
+	}
+	
 	private void initUI() {
 		chatTextField = new JTextField();
 		chatDispArea = new ChatTextPane();//new ChatTextArea();
