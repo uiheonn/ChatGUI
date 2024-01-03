@@ -30,7 +30,6 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	
 	public void clearText() {
 		chatDispArea.setText("");
-		writer.println(createMessage(ChatCommandUtil.INIT_ALIAS, String.format("%s|%s", connector.getName(), connector.getId()) ));
 	}
 	
 	private void initUI() {
@@ -167,7 +166,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 			}
 			// 연결 해제 버튼 클릭시 호출
-		} else {//whisper button
+		} else if (sourceObj == whisper) {//whisper button
 			ChatUser userToWhisper = (ChatUser)userList.getSelectedValue();
 			if(userToWhisper == null) {
 				JOptionPane.showMessageDialog(this, "User to whisper to must be selected", "Whisper", JOptionPane.WARNING_MESSAGE);
@@ -178,6 +177,10 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			sendMessage(ChatCommandUtil.WHISPER, String.format("%s|%s", userToWhisper.getId(), msgToSend));
 			chatTextField.setText("");
 			// 귓속말 버튼 클릭시 호출
+		} else  if (sourceObj == save){
+			String msgToSend = "reset";
+			sendMessage(ChatCommandUtil.INITIALIZE, msgToSend);
+			clearText();
 		}
 	}
 	
