@@ -10,6 +10,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class ChatPanel extends JPanel implements MessageReceiver, ActionListener, ChatSocketListener {
 	JTextField chatTextField;
+	JTextField statusField;
 	ChatTextPane chatDispArea;
 	UserList userList;
 	ConnectButton connectDisconnect;
@@ -35,17 +36,22 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	
 	private void initUI() {
 		chatTextField = new JTextField();
+		statusField = new JTextField();
 		chatDispArea = new ChatTextPane();//new ChatTextArea();
 		userList = new UserList();
 		
 		connectDisconnect = new ConnectButton();
 		whisper = new JButton("✉");
-		init = new JButton("❌");
+		init = new JButton("🔄");
 		save = new JButton("📂");
+	
 		
 		chatTextField.setEnabled(false);
 		chatDispArea.setEditable(false);
 		whisper.setEnabled(false);
+		save.setEnabled(false);
+		init.setEnabled(false);
+		statusField.setEnabled(false);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		JLabel titleLabel = new JLabel("Message Received", JLabel.CENTER);
@@ -57,7 +63,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		c = new GridBagConstraints();
 		titleLabel = new JLabel("List of Users", JLabel.CENTER);
 		c.gridy = 0;
-		c.gridx = 2;
+		c.gridx = 1;
 		c.gridwidth = 2;
 		c.insets = new Insets(2,2,2,2);
 		add(titleLabel, c);
@@ -75,7 +81,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		c = new GridBagConstraints();
 		c.gridy = 1;
 		c.gridx = 1;
-		c.gridwidth = 4;
+		c.gridwidth = 2;
 		c.weightx = 0.1;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.LINE_START;
@@ -93,7 +99,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		c = new GridBagConstraints();
 		c.gridy = 2;
 		c.gridx = 1;
-		c.anchor = GridBagConstraints.CENTER;
+		c.anchor = GridBagConstraints.LINE_START;
 		add(connectDisconnect, c);
 		
 		c = new GridBagConstraints();
@@ -103,14 +109,21 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		add(whisper, c);
 		
 		c = new GridBagConstraints();
-		c.gridy = 2;
-		c.gridx = 3;
+		c.gridy = 3;
+		c.gridx = 0;
+		c.insets = new Insets(0,0, 1, 0);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		add(statusField, c);
+		
+		c = new GridBagConstraints();
+		c.gridy = 3;
+		c.gridx = 1;
 		c.anchor = GridBagConstraints.CENTER;
 		add(init, c);
 		
 		c = new GridBagConstraints();
-		c.gridy = 2;
-		c.gridx = 4;
+		c.gridy = 3;
+		c.gridx = 2;
 		c.anchor = GridBagConstraints.CENTER;
 		add(save, c);
 		
@@ -158,6 +171,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		chatDispArea.setEnabled(true);
 		whisper.setEnabled(true);
 		userList.setEnabled(true);
+		statusField.setEnabled(true);
+		save.setEnabled(true);
+		init.setEnabled(true);
 	}
 
 	@Override
