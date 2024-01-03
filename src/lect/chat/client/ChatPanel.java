@@ -14,6 +14,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	UserList userList;
 	ConnectButton connectDisconnect;
 	JButton whisper;
+	JButton save;
 	PrintWriter writer;
 	ChatConnector connector;
 	StringBuilder msgBuilder = new StringBuilder();
