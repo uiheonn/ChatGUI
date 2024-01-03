@@ -9,3 +9,7 @@
 /ChatUserList.class
 /CommandButton.class
 /StatusBar.class
+/ConnectButton.class
+/UserList.class
+/UserList$CellRenderer.class
+/UserList$UserListTransferHandler.class
