@@ -193,10 +193,21 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			sendMessage(ChatCommandUtil.WHISPER, String.format("%s|%s", userToWhisper.getId(), msgToSend));
 			chatTextField.setText("");
 			// 귓속말 버튼 클릭시 호출
-		} else  if (sourceObj == save){
+		} else  if (sourceObj == init){
+			// 초기화
 			String msgToSend = "reset";
 			sendMessage(ChatCommandUtil.INITIALIZE, msgToSend);
 			clearText();
+		} else  if (sourceObj == save){
+			// 파일 저장
+			/*
+			 * 
+			 * 
+			 * 구현 해야 할 곳
+			 * 
+			 * 
+			 * 
+			 */
 		}
 	}
 	
