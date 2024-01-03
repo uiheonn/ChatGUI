@@ -1,5 +1,3 @@
-
-//test
 package lect.chat.client;
 import java.net.*;
 import java.util.*;
@@ -42,7 +40,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		this.addChatSocketListener(messageReceiver);
 		try {
 			P2P.getInstance().startService();
-			// P2P 클라이언트마다 하나씩 소켓과 스레드만들기
+			// P2P �겢�씪�씠�뼵�듃留덈떎 �븯�굹�뵫 �냼耳볤낵 �뒪�젅�뱶留뚮뱾湲�
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -54,7 +52,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		if(chatName == null ) return false;
 
 		try {
-			socket = new Socket("172.20.10.4", 8000);
+			socket = new Socket("192.168.200.122", 8000);
 			for(ChatSocketListener socketListener: socketListeners) {
 				socketListener.socketConnected(socket);
 			}
