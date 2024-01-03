@@ -39,9 +39,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		userList = new UserList();
 		
 		connectDisconnect = new ConnectButton();
-		whisper = new JButton("W");
-		init = new JButton("I");
-		save = new JButton("S");
+		whisper = new JButton("✉");
+		init = new JButton("❌");
+		save = new JButton("📂");
 		
 		chatTextField.setEnabled(false);
 		chatDispArea.setEditable(false);
