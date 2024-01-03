@@ -4,10 +4,12 @@ public class ChatUser {
 	String name;
 	String id;
 	String host;
-	public ChatUser(String name, String id, String host) {
+	int status;
+	public ChatUser(String name, String id, String host, int status) {
 		this.name = name;
 		this.id = id;
 		this.host = host;
+		this.status = status;
 	}
 	public String getName() {
 		return name;
@@ -20,5 +22,11 @@ public class ChatUser {
 	}
 	public String getHost() {
 		return host;
+	}
+	public void setStatus(int s) {
+		status = s;
+	}
+	public int getStatus() {
+		return status;
 	}
 }
