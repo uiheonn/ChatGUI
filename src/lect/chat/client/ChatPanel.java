@@ -19,6 +19,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	PrintWriter writer;
 	ChatConnector connector;
 	StringBuilder msgBuilder = new StringBuilder();
+	
 	public ChatPanel(ChatConnector c) {
 		super(new GridBagLayout());
 		initUI();
@@ -222,7 +223,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		for(String strUser : strUsers) {
 			nameWithIdHost = strUser.split(",");
 			if(connector.getId().equals(nameWithIdHost[1])) continue;
-			list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2]));
+			list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2], Integer.parseInt(nameWithIdHost[3])));
 		}
 		userList.addNewChatUsers(list);
 	}
