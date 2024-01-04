@@ -44,7 +44,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	
 	private void initUI() {
 		chatTextField = new JTextField();
-		chatTextField.setBounds(2, 267, 346, 21);
+		chatTextField.setBounds(2, 267, 300, 21);
 
 		chatDispArea = new ChatTextPane();
 		userList = new UserList();
@@ -82,7 +82,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		scrollPane.setBounds(2, 20, 300, 245);
 		add(scrollPane);
 		scrollPane_1 = new JScrollPane(userList);
-		scrollPane_1.setBounds(306, 20, 198, 245);
+		scrollPane_1.setBounds(306, 20, 120, 245);
 		add(scrollPane_1);
 		add(chatTextField);
 		add(connectDisconnect);
