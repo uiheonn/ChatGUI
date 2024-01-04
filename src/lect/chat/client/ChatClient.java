@@ -65,7 +65,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector , ChatONO
 		if(chatName == null ) return false;
 
 		try {
-			socket = new Socket("172.20.10.4", 7300);
+			socket = new Socket("172.20.10.4", 7400);
 			for(ChatSocketListener socketListener: socketListeners) {
 				socketListener.socketConnected(socket);
 			}
