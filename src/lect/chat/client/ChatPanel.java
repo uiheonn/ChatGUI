@@ -200,13 +200,13 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 			}
 		} else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
-			if(e.getActionCommand().equals(onOff.CMD_ONLINE)) {
-				if(chaton.on()) {
-					onOff.changeButton(onOff.CMD_OFFLINE);
-				}
+			if(e.getActionCommand().equals(StatusBtn.CMD_ONLINE)) {
+
+					onOff.changeButton(StatusBtn.CMD_OFFLINE);
+			
 			} else {//when clicked Disconnect button
-				chaton.off();
-				onOff.changeButton(onOff.CMD_ONLINE);
+			
+				onOff.changeButton(StatusBtn.CMD_ONLINE);
 		  }
 			sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
 			chatTextField.setText("");
