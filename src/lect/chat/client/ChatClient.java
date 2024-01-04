@@ -19,10 +19,13 @@ public class ChatClient extends WindowAdapter implements ChatConnector , ChatONO
 		JPanel contentPanel = new JPanel(new BorderLayout());
 		contentPanel.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
 		ChatPanel chatPanel = new ChatPanel(this);
+		
 		chatPanel.setBorder(BorderFactory.createEtchedBorder());
+		/*
 		StatusBar statusBar = StatusBar.getStatusBar();
 		statusBar.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1, 2, 2, 2)));
 		contentPanel.add(statusBar, BorderLayout.SOUTH);
+		*/
 		ChatMessageReceiver messageReceiver = new ChatMessageReceiver(this);
 		messageReceiver.setMessageReceiver(chatPanel);
 	
