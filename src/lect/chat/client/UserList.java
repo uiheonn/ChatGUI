@@ -106,4 +106,14 @@ public class UserList extends JList {
 			return true;
 		}
 	}
+
+	public ChatUser getUserByChatName(String chatName) {
+		for (int i = 0; i < getModel().getSize(); i++) {
+	        ChatUser user = (ChatUser) getModel().getElementAt(i);
+	        if (user.getName().equals(chatName)) {
+	            return user;
+	        }
+	    }
+	    return null;
+	}
 }

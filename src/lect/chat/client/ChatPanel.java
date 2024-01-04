@@ -37,6 +37,8 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		chatTextField.addActionListener(this);
 		connectDisconnect.addActionListener(this);
 		whisper.addActionListener(this);
+		init.addActionListener(this);
+		statusBtn.addActionListener(this);
 		// UI 생성
 	}
 	
@@ -115,9 +117,20 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			case ChatCommandUtil.USER_LIST:
 				displayUserList(msg);
 				break;
+			case ChatCommandUtil.CHANGE_STATUS:
+				processChangeStatus(msg); // 상태변경
 			default:
 				break;
 				}
+	}
+
+	private void processChangeStatus(String msg) {
+		String chatName = msg.substring(msg.indexOf('|') + 1);
+	    ChatUser userToChangeStatus = userList.getUserByChatName(chatName);
+	    if (userToChangeStatus != null) {
+	        userToChangeStatus.setStatus(1);
+	        userList.repaint();
+	    }
 	}
 
 	@Override
@@ -182,12 +195,15 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 			sendMessage(ChatCommandUtil.WHISPER, String.format("%s|%s", userToWhisper.getId(), msgToSend));
 			chatTextField.setText("");
 			// 귓속말 버튼 클릭시 호출
-		} else  if (sourceObj == init){
+		} else if (sourceObj == statusBtn) {
+			sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
+			chatTextField.setText("");
+		} else if (sourceObj == init){
 			// 초기화
 			String msgToSend = "reset";
 			sendMessage(ChatCommandUtil.INITIALIZE, msgToSend);
 			clearText();
-		} else  if (sourceObj == save){
+		} else if (sourceObj == save){
 			// 파일 저장
 			/*
 			 * 

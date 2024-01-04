@@ -95,6 +95,11 @@ public class ClientHandler implements Runnable, MessageHandler {
 			String msgToWhisper = msg.substring(msg.indexOf('|') + 1);
 			GroupManager.sendWhisper(this, toId, String.format("%s: %s", chatName, msgToWhisper));
 			break;
+		case ChatCommandUtil.CHANGE_STATUS:
+		    String status = msg.substring(msg.indexOf('|') + 1);
+		    GroupManager.broadcastMessageAllClientStatus(chatName);
+
+            break;
 			default:
 				System.out.printf("ChatCommand %c \n", command);
 				break;

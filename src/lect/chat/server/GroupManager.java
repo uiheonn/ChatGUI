@@ -77,4 +77,10 @@ public class GroupManager {
 		return msgBuilder.toString();
 		
 	}
+	public static void broadcastMessageAllClientStatus(String msg) {
+		// 모든 사용자에게 상태 메세지 전송
+		for(MessageHandler handler: clientGroup) {
+			handler.sendMessage(createMessage(ChatCommandUtil.CHANGE_STATUS, msg));
+		}
+	}
 }
