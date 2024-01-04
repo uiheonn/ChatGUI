@@ -5,11 +5,11 @@ public class ChatUser {
 	String id;
 	String host;
 	int status;
-	public ChatUser(String name, String id, String host, int status) {
+	public ChatUser(String name, String id, String host) {
 		this.name = name;
 		this.id = id;
 		this.host = host;
-		this.status = status;
+		this.status = 0;
 	}
 	public String getName() {
 		return name;

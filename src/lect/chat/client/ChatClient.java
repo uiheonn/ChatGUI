@@ -8,7 +8,7 @@ import java.io.*;
 
 import lect.chat.client.event.*;
 import lect.chat.client.p2p.P2P;
-public class ChatClient extends WindowAdapter implements ChatConnector , ChatONOFF {
+public class ChatClient extends WindowAdapter implements ChatConnector /* , ChatONOFF*/ {
 	private Socket socket;
 	private String chatName;
 	private String id;
@@ -48,16 +48,16 @@ public class ChatClient extends WindowAdapter implements ChatConnector , ChatONO
 			e.printStackTrace();
 		}
 	}	
-	@Override
-	public boolean on() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
-	public void off() {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public boolean on() {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
+//	@Override
+//	public void off() {
+//		// TODO Auto-generated method stub
+//		
+//	}
 	@Override
 	public boolean connect() {
 		if(socketAvailable()) return true;
@@ -65,7 +65,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector , ChatONO
 		if(chatName == null ) return false;
 
 		try {
-			socket = new Socket("172.20.10.4", 7000);
+			socket = new Socket("172.20.10.5", 1223);
 			for(ChatSocketListener socketListener: socketListeners) {
 				socketListener.socketConnected(socket);
 			}

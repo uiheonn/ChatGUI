@@ -122,6 +122,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				break;
 			case ChatCommandUtil.CHANGE_STATUS:
 				processChangeStatus(msg); // 상태변경
+				break;
 			default:
 				break;
 				}
@@ -187,13 +188,13 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 			}
 		} else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
-			if(e.getActionCommand().equals(onOff.CMD_ONLINE)) {
-				if(chaton.on()) {
-					onOff.changeButton(onOff.CMD_OFFLINE);
-				}
+			if(e.getActionCommand().equals(StatusBtn.CMD_ONLINE)) {
+
+					onOff.changeButton(StatusBtn.CMD_OFFLINE);
+			
 			} else {//when clicked Disconnect button
-				chaton.off();
-				onOff.changeButton(onOff.CMD_ONLINE);
+			
+				onOff.changeButton(StatusBtn.CMD_ONLINE);
 		  }
       sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
 			chatTextField.setText("");
@@ -238,7 +239,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		for(String strUser : strUsers) {
 			nameWithIdHost = strUser.split(",");
 			if(connector.getId().equals(nameWithIdHost[1])) continue;
-			list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2], Integer.parseInt(nameWithIdHost[3])));
+			list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2]));
 		}
 		userList.addNewChatUsers(list);
 	}
