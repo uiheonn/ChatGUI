@@ -52,7 +52,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		if(chatName == null ) return false;
 
 		try {
-			socket = new Socket("192.168.200.122", 1223);
+			socket = new Socket("172.20.10.4", 7000);
 			for(ChatSocketListener socketListener: socketListeners) {
 				socketListener.socketConnected(socket);
 			}

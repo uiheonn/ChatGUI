@@ -50,6 +50,7 @@ public class ChatTextPane extends JTextPane implements FileProgressListener{
 				attrset = enterExitAttrSet;
 				break;
 			case ChatCommandUtil.NORMAL:
+			case ChatCommandUtil.CHANGE_STATUS:
 				default:
 					attrset = normalAttrSet;
 					break;
