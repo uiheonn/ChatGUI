@@ -21,6 +21,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	JButton init; // 초기화 버튼
 	JButton statusBtn; // 상태 변경 버튼
 	JLabel statusField; // 상태 표시 라벨
+
 	// 
 	
 	PrintWriter writer;
@@ -28,6 +29,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	StringBuilder msgBuilder = new StringBuilder();
 	private JLabel titleLabel_1;
 	private JScrollPane scrollPane_1;
+	private JScrollPane scrollPane_2;
 	
 	public ChatPanel(ChatConnector c) {
 		initUI();
@@ -44,24 +46,24 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	
 	private void initUI() {
 		chatTextField = new JTextField();
-		chatTextField.setBounds(2, 267, 300, 21);
+		chatTextField.setBounds(2, 267, 295, 21);
 
 		chatDispArea = new ChatTextPane();
 		userList = new UserList();
 		connectDisconnect = new ConnectButton();
-		connectDisconnect.setBounds(356, 266, 69, 23);
+		connectDisconnect.setBounds(305, 266, 90, 23);
 		whisper = new JButton("   ✉   ");
-		whisper.setBounds(430, 266, 69, 23);
+		whisper.setBounds(397, 266, 90, 23);
 		
 		// ui 변수 선언
 		statusField = new JLabel(" 버튼을 통해 현재 상태를 알려주세요");
 		statusField.setBounds(2, 294, 284, 15);
 		init = new JButton("   🔄   ");
-		init.setBounds(356, 290, 69, 23);
+		init.setBounds(306, 290, 90, 23);
 		save = new JButton("   📂   ");
-		save.setBounds(430, 290, 69, 23);
+		save.setBounds(397, 290, 90, 23);
 		statusBtn = new JButton("비움");
-		statusBtn.setBounds(280, 290, 60, 23);
+		statusBtn.setBounds(235, 290, 60, 23);
 		//
 		
 		chatTextField.setEnabled(false);
@@ -73,7 +75,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		statusBtn.setEnabled(false);
 		setLayout(null);
 		JLabel titleLabel = new JLabel("Message Received", JLabel.CENTER);
-		titleLabel.setBounds(107, 2, 101, 15);
+		titleLabel.setBounds(77, 2, 142, 15);
 		add(titleLabel);
 		titleLabel_1 = new JLabel("List of Users", JLabel.CENTER);
 		titleLabel_1.setBounds(320, 2, 84, 15);
@@ -84,6 +86,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		scrollPane_1 = new JScrollPane(userList);
 		scrollPane_1.setBounds(306, 20, 120, 245);
 		add(scrollPane_1);
+		
 		add(chatTextField);
 		add(connectDisconnect);
 		add(whisper);
