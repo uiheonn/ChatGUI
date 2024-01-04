@@ -30,7 +30,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		contentPanel.add(chatPanel);
 		
 		chatWindow.setContentPane(contentPanel);
-		chatWindow.setSize(450, 350);
+		chatWindow.setSize(530, 380);
 		
 		chatWindow.setLocationRelativeTo(null);
 		chatWindow.setVisible(true);
@@ -52,7 +52,7 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		if(chatName == null ) return false;
 
 		try {
-			socket = new Socket("192.168.200.122", 8000);
+			socket = new Socket("192.168.200.122", 1223);
 			for(ChatSocketListener socketListener: socketListeners) {
 				socketListener.socketConnected(socket);
 			}

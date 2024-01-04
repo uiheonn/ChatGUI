@@ -6,23 +6,30 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
 import java.util.*;
 @SuppressWarnings("serial")
 public class ChatPanel extends JPanel implements MessageReceiver, ActionListener, ChatSocketListener {
 	JTextField chatTextField;
-	JTextField statusField;
 	ChatTextPane chatDispArea;
 	UserList userList;
 	ConnectButton connectDisconnect;
 	JButton whisper;
-	JButton save;
-	JButton init;
+
+	// ui 추가 변수
+	JButton save; // 저장 버튼
+	JButton init; // 초기화 버튼
+	JButton statusBtn; // 상태 변경 버튼
+	JLabel statusField; // 상태 표시 라벨
+	// 
+	
 	PrintWriter writer;
 	ChatConnector connector;
 	StringBuilder msgBuilder = new StringBuilder();
+	private JLabel titleLabel_1;
+	private JScrollPane scrollPane_1;
 	
 	public ChatPanel(ChatConnector c) {
-		super(new GridBagLayout());
 		initUI();
 		connector = c;
 		chatTextField.addActionListener(this);
@@ -37,15 +44,25 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	
 	private void initUI() {
 		chatTextField = new JTextField();
-		statusField = new JTextField();
-		chatDispArea = new ChatTextPane();//new ChatTextArea();
+		chatTextField.setBounds(2, 267, 346, 21);
+
+		chatDispArea = new ChatTextPane();
 		userList = new UserList();
-		
 		connectDisconnect = new ConnectButton();
-		whisper = new JButton("✉");
-		init = new JButton("🔄");
-		save = new JButton("📂");
-	
+		connectDisconnect.setBounds(356, 266, 69, 23);
+		whisper = new JButton("   ✉   ");
+		whisper.setBounds(430, 266, 69, 23);
+		
+		// ui 변수 선언
+		statusField = new JLabel(" 버튼을 통해 현재 상태를 알려주세요");
+		statusField.setBounds(2, 294, 284, 15);
+		init = new JButton("   🔄   ");
+		init.setBounds(356, 290, 69, 23);
+		save = new JButton("   📂   ");
+		save.setBounds(430, 290, 69, 23);
+		statusBtn = new JButton("비움");
+		statusBtn.setBounds(280, 290, 60, 23);
+		//
 		
 		chatTextField.setEnabled(false);
 		chatDispArea.setEditable(false);
@@ -53,80 +70,27 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		save.setEnabled(false);
 		init.setEnabled(false);
 		statusField.setEnabled(false);
-		
-		GridBagConstraints c = new GridBagConstraints();
+		statusBtn.setEnabled(false);
+		setLayout(null);
 		JLabel titleLabel = new JLabel("Message Received", JLabel.CENTER);
-		c.gridy = 0;
-		c.gridx = 0;
-		c.insets = new Insets(2,2,2,2);
-		add(titleLabel, c);
-		
-		c = new GridBagConstraints();
-		titleLabel = new JLabel("List of Users", JLabel.CENTER);
-		c.gridy = 0;
-		c.gridx = 1;
-		c.gridwidth = 2;
-		c.insets = new Insets(2,2,2,2);
-		add(titleLabel, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 1;
-		c.gridx = 0;
-		c.weighty = 1.0f;
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.9;
-		c.insets = new Insets(1, 2, 0, 2);
+		titleLabel.setBounds(107, 2, 101, 15);
+		add(titleLabel);
+		titleLabel_1 = new JLabel("List of Users", JLabel.CENTER);
+		titleLabel_1.setBounds(320, 2, 84, 15);
+		add(titleLabel_1);
 		JScrollPane scrollPane = new JScrollPane(chatDispArea);
-		add(scrollPane, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 1;
-		c.gridx = 1;
-		c.gridwidth = 2;
-		c.weightx = 0.1;
-		c.fill = GridBagConstraints.BOTH;
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(1, 2, 0, 2);
-		scrollPane = new JScrollPane(userList);
-		add(scrollPane, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 2;
-		c.gridx = 0;
-		c.insets = new Insets(0,0, 1, 0);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		add(chatTextField, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 2;
-		c.gridx = 1;
-		c.anchor = GridBagConstraints.LINE_START;
-		add(connectDisconnect, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 2;
-		c.gridx = 2;
-		c.anchor = GridBagConstraints.CENTER;
-		add(whisper, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 3;
-		c.gridx = 0;
-		c.insets = new Insets(0,0, 1, 0);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		add(statusField, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 3;
-		c.gridx = 1;
-		c.anchor = GridBagConstraints.CENTER;
-		add(init, c);
-		
-		c = new GridBagConstraints();
-		c.gridy = 3;
-		c.gridx = 2;
-		c.anchor = GridBagConstraints.CENTER;
-		add(save, c);
+		scrollPane.setBounds(2, 20, 300, 245);
+		add(scrollPane);
+		scrollPane_1 = new JScrollPane(userList);
+		scrollPane_1.setBounds(306, 20, 198, 245);
+		add(scrollPane_1);
+		add(chatTextField);
+		add(connectDisconnect);
+		add(whisper);
+		add(statusField);
+		add(init);
+		add(save);
+		add(statusBtn);
 		
 	}
 	
@@ -160,6 +124,10 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		chatDispArea.setEnabled(false);
 		whisper.setEnabled(false);
 		userList.setEnabled(false);
+		save.setEnabled(false);
+		init.setEnabled(false);
+		statusField.setEnabled(false);
+		statusBtn.setEnabled(false);
 		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 	}
 
@@ -175,6 +143,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		statusField.setEnabled(true);
 		save.setEnabled(true);
 		init.setEnabled(true);
+		statusBtn.setEnabled(true);
 	}
 
 	@Override
@@ -257,5 +226,4 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		return msgBuilder.toString();
 		
 	}
-
 }
