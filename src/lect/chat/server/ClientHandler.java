@@ -97,7 +97,7 @@ public class ClientHandler implements Runnable, MessageHandler {
 			break;
 		case ChatCommandUtil.CHANGE_STATUS:
 		    String status = msg.substring(msg.indexOf('|') + 1);
-		    GroupManager.broadcastMessageAllClientStatus(chatName);
+		    GroupManager.broadcastMessageAllClientStatus(id);
 
             break;
 			default:

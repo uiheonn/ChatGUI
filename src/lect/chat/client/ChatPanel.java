@@ -130,8 +130,8 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	}
 
 	private void processChangeStatus(String msg) {
-		String chatName = msg;
-	    ChatUser userToChangeStatus = getUserByChatName(chatName);
+		String chatID = msg;
+	    ChatUser userToChangeStatus = getUserByChatID(chatID);
 	    if (userToChangeStatus != null) {
 	        userToChangeStatus.setStatus(1);
 	        String msgToSend = Integer.toString(userToChangeStatus.getStatus());
@@ -140,9 +140,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	    }
 	}
 	
-	public ChatUser getUserByChatName(String chatName) {
+	public ChatUser getUserByChatID(String chatID) {
         for (ChatUser user : chatUsers) {
-            if (user.getName().equals(chatName)) {
+            if (user.getId().equals(chatID)) {
                 return user;
             }
         }
@@ -202,7 +202,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		} else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
 			if(e.getActionCommand().equals(StatusBtn.CMD_ONLINE)) {
 
-					onOff.changeButton(StatusBtn.CMD_OFFLINE);
+				onOff.changeButton(StatusBtn.CMD_OFFLINE);
 			
 			} else {//when clicked Disconnect button
 			
