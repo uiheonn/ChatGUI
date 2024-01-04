@@ -16,7 +16,8 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	ConnectButton connectDisconnect;
 	StatusBtn onOff;
 	JButton whisper;
-
+	private ArrayList<ChatUser> chatUsers = new ArrayList<>();
+	
 	// ui 추가 변수
 	JButton save; // 저장 버튼
 	JButton init; // 초기화 버튼
@@ -122,19 +123,31 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				break;
 			case ChatCommandUtil.CHANGE_STATUS:
 				processChangeStatus(msg); // 상태변경
+				break;
 			default:
 				break;
 				}
 	}
 
 	private void processChangeStatus(String msg) {
-		String chatName = msg.substring(msg.indexOf('|') + 1);
-	    ChatUser userToChangeStatus = userList.getUserByChatName(chatName);
+		String chatName = msg;
+	    ChatUser userToChangeStatus = getUserByChatName(chatName);
 	    if (userToChangeStatus != null) {
 	        userToChangeStatus.setStatus(1);
+	        String msgToSend = Integer.toString(userToChangeStatus.getStatus());
+			sendMessage(ChatCommandUtil.INITIALIZE, msgToSend);
 	        userList.repaint();
 	    }
 	}
+	
+	public ChatUser getUserByChatName(String chatName) {
+        for (ChatUser user : chatUsers) {
+            if (user.getName().equals(chatName)) {
+                return user;
+            }
+        }
+        return null;
+    }
 
 	@Override
 	public void socketClosed() {
@@ -195,7 +208,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				chaton.off();
 				onOff.changeButton(onOff.CMD_ONLINE);
 		  }
-      sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
+			sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
 			chatTextField.setText("");
 			
 		} else if (sourceObj == whisper) {//whisper button
@@ -238,8 +251,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		for(String strUser : strUsers) {
 			nameWithIdHost = strUser.split(",");
 			if(connector.getId().equals(nameWithIdHost[1])) continue;
-			list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2], Integer.parseInt(nameWithIdHost[3])));
+			list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2]));
 		}
+		chatUsers = list;
 		userList.addNewChatUsers(list);
 	}
 	
