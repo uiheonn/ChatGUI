@@ -14,17 +14,19 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	ChatTextPane chatDispArea;
 	UserList userList;
 	ConnectButton connectDisconnect;
+	StatusBtn onOff;
 	JButton whisper;
 
 	// ui 추가 변수
 	JButton save; // 저장 버튼
 	JButton init; // 초기화 버튼
-	JButton statusBtn; // 상태 변경 버튼
+	
 	JLabel statusField; // 상태 표시 라벨
 	// 
 	
 	PrintWriter writer;
 	ChatConnector connector;
+	ChatONOFF chaton;
 	StringBuilder msgBuilder = new StringBuilder();
 	private JLabel titleLabel_1;
 	private JScrollPane scrollPane_1;
@@ -35,6 +37,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		chatTextField.addActionListener(this);
 		connectDisconnect.addActionListener(this);
 		whisper.addActionListener(this);
+		onOff.addActionListener(this);
 		// UI 생성
 	}
 	
@@ -60,8 +63,8 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		init.setBounds(356, 290, 69, 23);
 		save = new JButton("   📂   ");
 		save.setBounds(430, 290, 69, 23);
-		statusBtn = new JButton("비움");
-		statusBtn.setBounds(280, 290, 60, 23);
+		onOff = new StatusBtn();
+		onOff.setBounds(280, 290, 60, 23);
 		//
 		
 		chatTextField.setEnabled(false);
@@ -70,7 +73,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		save.setEnabled(false);
 		init.setEnabled(false);
 		statusField.setEnabled(false);
-		statusBtn.setEnabled(false);
+		onOff.setEnabled(false);
 		setLayout(null);
 		JLabel titleLabel = new JLabel("Message Received", JLabel.CENTER);
 		titleLabel.setBounds(107, 2, 101, 15);
@@ -90,7 +93,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		add(statusField);
 		add(init);
 		add(save);
-		add(statusBtn);
+		add(onOff);
 		
 	}
 	
@@ -127,7 +130,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		save.setEnabled(false);
 		init.setEnabled(false);
 		statusField.setEnabled(false);
-		statusBtn.setEnabled(false);
+		onOff.setEnabled(false);
 		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 	}
 
@@ -143,7 +146,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 		statusField.setEnabled(true);
 		save.setEnabled(true);
 		init.setEnabled(true);
-		statusBtn.setEnabled(true);
+		onOff.setEnabled(true);
 	}
 
 	@Override
@@ -167,7 +170,16 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 				connector.disConnect();
 				connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
 			}
-			// 연결 해제 버튼 클릭시 호출
+		} else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
+			if(e.getActionCommand().equals(onOff.CMD_ONLINE)) {
+				if(chaton.on()) {
+					onOff.changeButton(onOff.CMD_OFFLINE);
+				}
+			} else {//when clicked Disconnect button
+				chaton.off();
+				onOff.changeButton(onOff.CMD_ONLINE);
+		}
+			
 		} else if (sourceObj == whisper) {//whisper button
 			ChatUser userToWhisper = (ChatUser)userList.getSelectedValue();
 			if(userToWhisper == null) {
