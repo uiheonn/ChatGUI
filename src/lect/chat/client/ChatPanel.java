@@ -70,7 +70,6 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       save = new JButton("   📂   ");
       onOff = new StatusBtn();
       onOff.setBounds(230, 290, 60, 23);
-
       save.setBounds(397, 290, 90, 23);
       //
       
@@ -91,15 +90,15 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       JScrollPane scrollPane = new JScrollPane(chatDispArea);
       scrollPane.setBounds(2, 20, 300, 245);
       add(scrollPane);
-      
+     
       scrollPane_1 = new JScrollPane(userList);
       scrollPane_1.setBounds(306, 20, 120, 245);
       add(scrollPane_1);
-      
+
       scrollPane_2 = new JScrollPane(onList);
       scrollPane_2.setBounds(430, 20, 60, 245);
       add(scrollPane_2);
-      
+
       add(chatTextField);
       add(connectDisconnect);
       add(whisper);
@@ -256,7 +255,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       chatUsers = list;
       userList.addNewChatUsers(list);
    }
-   
+
    private void displayOnList(String users) {
       // 서버에서 사용자 목록 받아서 목록 업데이트 GroupManager에서 호출됨
 
@@ -273,8 +272,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       chatUsers = list;
       onList.addUserStatus(list);
    }
-   
-   
+  
    private void sendMessage(char command, String msg) {
       writer.println(createMessage(command, msg));
    }

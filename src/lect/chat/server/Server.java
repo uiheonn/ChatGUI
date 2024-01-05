@@ -5,8 +5,8 @@ public class Server implements Runnable {
 	ServerSocket ss;
 	public Server() throws IOException {
 		// 소켓 초기화하고 포트 설정
-		ss = new ServerSocket(1223);
-		System.out.printf("ChatServer[%s] is listening on port 1223\n", InetAddress.getLocalHost().getHostAddress());
+		ss = new ServerSocket(7500);
+		System.out.printf("ChatServer[%s] is listening on port [%s]\n", InetAddress.getLocalHost().getHostAddress(),ss.getLocalPort());
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			// 종료할때 정리를 위해 셧다운 후크 등록 -> 정상 비정상 종료시 호출되서 실행됨
 			public void run() {
