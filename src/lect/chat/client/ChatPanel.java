@@ -23,7 +23,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    JButton init; // 초기화 버튼
    
    JLabel statusField; // 상태 표시 라벨
-
+   OnList onList; // 상태 표시 리스트
    // 
    
    PrintWriter writer;
@@ -56,6 +56,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 
       chatDispArea = new ChatTextPane();
       userList = new UserList();
+      onList = new OnList();
       connectDisconnect = new ConnectButton();
       connectDisconnect.setBounds(305, 266, 90, 23);
       whisper = new JButton("   ✉   ");
@@ -68,8 +69,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       init.setBounds(306, 290, 90, 23);
       save = new JButton("   📂   ");
       onOff = new StatusBtn();
-      onOff.setBounds(280, 290, 60, 23);
-
+      onOff.setBounds(230, 290, 60, 23);
       save.setBounds(397, 290, 90, 23);
       //
       
@@ -90,10 +90,15 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       JScrollPane scrollPane = new JScrollPane(chatDispArea);
       scrollPane.setBounds(2, 20, 300, 245);
       add(scrollPane);
+     
       scrollPane_1 = new JScrollPane(userList);
       scrollPane_1.setBounds(306, 20, 120, 245);
       add(scrollPane_1);
-      
+
+      scrollPane_2 = new JScrollPane(onList);
+      scrollPane_2.setBounds(430, 20, 60, 245);
+      add(scrollPane_2);
+
       add(chatTextField);
       add(connectDisconnect);
       add(whisper);
@@ -121,6 +126,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
             break;
          case ChatCommandUtil.USER_LIST:
             displayUserList(msg);
+            displayOnList(msg);
             break;
          case ChatCommandUtil.CHANGE_STATUS:
             processChangeStatus(msg); // 상태변경
@@ -250,7 +256,24 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       chatUsers = list;
       userList.addNewChatUsers(list);
    }
-   
+
+   private void displayOnList(String users) {
+      // 서버에서 사용자 목록 받아서 목록 업데이트 GroupManager에서 호출됨
+
+      //format should be like 'name1,id1,host1|name2,id2,host2|...'
+      //System.out.println(users);
+      String [] strUsers = users.split("\\|");
+      String [] nameWithIdHost;
+      ArrayList<ChatUser> list = new ArrayList<ChatUser>();
+      for(String strUser : strUsers) {
+         nameWithIdHost = strUser.split(",");
+         if(connector.getId().equals(nameWithIdHost[1])) continue;
+         list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2]));
+      }
+      chatUsers = list;
+      onList.addUserStatus(list);
+   }
+  
    private void sendMessage(char command, String msg) {
       writer.println(createMessage(command, msg));
    }
