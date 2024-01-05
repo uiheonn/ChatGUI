@@ -139,11 +139,16 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    private void processChangeStatus(String msg) {
       String chatID = msg;
        ChatUser userToChangeStatus = getUserByChatID(chatID);
+       //sendMessage(ChatCommandUtil.UNKNOWN, userToChangeStatus.getId());
        if (userToChangeStatus != null) {
-           userToChangeStatus.setStatus(1);
-           String msgToSend = Integer.toString(userToChangeStatus.getStatus());
-           sendMessage(ChatCommandUtil.INITIALIZE, msgToSend);
-           userList.repaint();
+    	   if (onOff.getText().equals(StatusBtn.CMD_ONLINE)) {
+    		    userToChangeStatus.setStatus(1);
+    		} else {
+    		    userToChangeStatus.setStatus(0);
+    		}
+           String msgToSend = userToChangeStatus.getName() + "상태: " + Integer.toString(userToChangeStatus.getStatus());
+           sendMessage(ChatCommandUtil.UNKNOWN, msgToSend);
+           //userList.repaint();
        }
    }
    
@@ -207,17 +212,13 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
             connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
          }
       } else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
-         if(e.getActionCommand().equals(StatusBtn.CMD_ONLINE)) {
-
+    	  sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
+          chatTextField.setText("");
+          if(e.getActionCommand().equals(StatusBtn.CMD_ONLINE)) {
             onOff.changeButton(StatusBtn.CMD_OFFLINE);
-         
-         } else {//when clicked Disconnect button
-         
-            onOff.changeButton(StatusBtn.CMD_ONLINE);
-        }
-         sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
-         chatTextField.setText("");
-         
+          } else {//when clicked Disconnect button
+        	  onOff.changeButton(StatusBtn.CMD_ONLINE);
+          }
       } else if (sourceObj == whisper) {//whisper button
          ChatUser userToWhisper = (ChatUser)userList.getSelectedValue();
          if(userToWhisper == null) {
