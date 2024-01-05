@@ -12,18 +12,15 @@ import java.util.List;
 import lect.chat.client.p2p.FileSender;
 
 @SuppressWarnings("serial")
-public class UserList extends JList {
+public class UserList extends MyList {
 	public UserList() {
 		// 사용자 목록 표시를 위함
-		super(new DefaultListModel());
-		this.setCellRenderer(new CellRenderer()); // 목록 스타일 설정
-		DefaultListModel model = (DefaultListModel) getModel();
-		model.addElement(null);
+		super();
 		
 		this.setDropMode(DropMode.ON);
 		this.setTransferHandler(new UserListTransferHandler()); // 드래그앤 드롭 지원을 위해 설정
-		
 	}
+	
 	public void addNewChatUsers(ArrayList <ChatUser> users) {
 		// 데이터 받아서 목록에 하나씩 추가
 		DefaultListModel newModel = new DefaultListModel();
@@ -31,30 +28,6 @@ public class UserList extends JList {
 			newModel.addElement(user);
 		}
 		setModel(newModel);
-	}
-
-	class CellRenderer extends JLabel implements ListCellRenderer {
-		// 사용자 목록 스타일 설정 선택된거랑 안된거 배경색 설정
-		public CellRenderer() {
-			setOpaque(true);
-		}
-
-		public Component getListCellRendererComponent(
-				JList list, Object value, int index, 
-				boolean isSelected, boolean cellHasFocus) {
-			setText(value == null? "": value.toString());
-			if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
-            } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
-            }      
-            setEnabled(list.isEnabled());
-            setFont(list.getFont());
-            setOpaque(true);
-            return this;
-		}
 	}
 
 	public void transferFileDropped(List<File> files) {
@@ -105,5 +78,15 @@ public class UserList extends JList {
 			}
 			return true;
 		}
+	}
+	
+	public ChatUser getUserByChatName(String chatName) {
+		for (int i = 0; i < getModel().getSize(); i++) {
+	        ChatUser user = (ChatUser) getModel().getElementAt(i);
+	        if (user.getName().equals(chatName)) {
+	            return user;
+	        }
+	    }
+	    return null;
 	}
 }
