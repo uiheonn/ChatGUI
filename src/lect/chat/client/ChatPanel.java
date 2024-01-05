@@ -141,11 +141,11 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
        ChatUser userToChangeStatus = getUserByChatID(chatID);
        //sendMessage(ChatCommandUtil.UNKNOWN, userToChangeStatus.getId());
        if (userToChangeStatus != null) {
-    	   if (onOff.getText().equals(StatusBtn.CMD_ONLINE)) {
-    		    userToChangeStatus.setStatus(1);
-    		} else {
-    		    userToChangeStatus.setStatus(0);
-    		}
+    	   if (onOff.getText().equals("on")) {
+               userToChangeStatus.setStatus(1);
+           } else if (onOff.getText().equals("off")) {
+               userToChangeStatus.setStatus(0);
+           }
            String msgToSend = userToChangeStatus.getName() + "상태: " + Integer.toString(userToChangeStatus.getStatus());
            sendMessage(ChatCommandUtil.UNKNOWN, msgToSend);
            //userList.repaint();
