@@ -3,7 +3,7 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class ConnectButton extends JButton{
 	static final String CMD_DISCONNECT = "   ❌   ";
-	static final String CMD_CONNECT = "   🔑   ";
+	static final String CMD_CONNECT = "   ✔   ";
 
 	public ConnectButton() {
 		this(CMD_CONNECT);

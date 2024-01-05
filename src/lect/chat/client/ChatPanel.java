@@ -59,7 +59,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       onList = new OnList();
       connectDisconnect = new ConnectButton();
       connectDisconnect.setBounds(305, 266, 90, 23);
-      whisper = new JButton("   ✉   ");
+      whisper = new JButton("  👂  ");
       whisper.setBounds(397, 266, 90, 23);
       
       // ui 변수 선언
