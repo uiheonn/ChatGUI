@@ -19,7 +19,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    private ArrayList<ChatUser> chatUsers = new ArrayList<>();
    
    // ui 추가 변수
-   JButton save; // 저장 버튼
+   SaveBtn save; // 저장 버튼
    JButton init; // 초기화 버튼
    
    JLabel statusField; // 상태 표시 라벨
@@ -67,7 +67,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       statusField.setBounds(2, 294, 284, 15);
       init = new JButton("   🔄   ");
       init.setBounds(306, 290, 90, 23);
-      save = new JButton("   📂   ");
+      save = new SaveBtn(chatDispArea);
       onOff = new StatusBtn();
       onOff.setBounds(230, 290, 60, 23);
       save.setBounds(397, 290, 90, 23);
@@ -236,7 +236,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          sendMessage(ChatCommandUtil.INITIALIZE, msgToSend);
          clearText();
       } else if (sourceObj == save){
-         saveline();
+         save.saveline();
       }
    }
    
@@ -287,67 +287,4 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       return msgBuilder.toString();
       
    }
-//   private void saveChatToFile() {
-//        // 현재 채팅 내용을 파일로 저장
-//        String chatContent = chatDispArea.getSelectedText();
-//
-//        // 파일 다이얼로그를 통해 저장할 경로를 선택
-//        JFileChooser fileChooser = new JFileChooser();
-//        int userChoice = fileChooser.showSaveDialog(null);
-//
-//        if (userChoice == JFileChooser.APPROVE_OPTION) {
-//            try {
-//                // 선택한 파일에 채팅 내용 저장
-//                String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-//                try (FileWriter writer = new FileWriter(filePath)) {
-//                    writer.write(chatContent);
-//                }
-//                JOptionPane.showMessageDialog(null, "Success");
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//                JOptionPane.showMessageDialog(null, "Error");
-//            }
-//        }
-//    }
-     private void saveline() {
-           String startLineStr = JOptionPane.showInputDialog(null, "Start line:");
-           String endLineStr = JOptionPane.showInputDialog(null, "End line:");
-
-           try {
-               int startLine = startLineStr.isEmpty() ? 1 : Integer.parseInt(startLineStr);
-                int endLine = endLineStr.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(endLineStr);
-               savetext(startLine, endLine);
-           } catch (NumberFormatException e) {
-               JOptionPane.showMessageDialog(null, "Error");
-           }
-       }
-
-     private void savetext(int startLine, int endLine) {
-           // 현재 채팅 내용을 라인별로 파일로 저장
-           String chatContent = chatDispArea.getText();
-
-           // 파일 다이얼로그를 통해 저장할 경로를 선택하도록 할 수도 있습니다.
-           JFileChooser fileChooser = new JFileChooser();
-           int userChoice = fileChooser.showSaveDialog(null);
-
-           if (userChoice == JFileChooser.APPROVE_OPTION) {
-               try {
-                   // 선택한 파일에 지정한 범위의 라인을 저장
-                   String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                   if (!filePath.toLowerCase().endsWith(".txt")) {
-                       filePath += ".txt"; // 파일 확장자가 .txt로 끝나지 않으면 추가
-                   }
-                   try (FileWriter writer = new FileWriter(filePath)) {
-                       String[] lines = chatContent.split("\\n");
-                       for (int i = startLine - 1; i < endLine && i < lines.length; i++) {
-                           writer.write(lines[i] + System.lineSeparator());
-                       }
-                   }
-                   JOptionPane.showMessageDialog(null, "저장 완료");
-               } catch (IOException ex) {
-                   ex.printStackTrace();
-                   JOptionPane.showMessageDialog(null, "실패");
-               }
-           }
-       }
 }
