@@ -100,10 +100,9 @@ public class ClientHandler implements Runnable, MessageHandler {
 		case ChatCommandUtil.MSG:
 			GroupManager.broadcastMessageAllClientStatus(msg);
             break;
-			default:
-				System.out.printf("ChatCommand %c \n", command);
-				break;
-			
+		default:
+			System.out.printf("ChatCommand %c \n", command);
+			break;	
 		}
 	}
 }
