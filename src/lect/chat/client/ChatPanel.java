@@ -1,6 +1,8 @@
 package lect.chat.client;
 import lect.chat.client.event.*;
 import lect.chat.protocol.ChatCommandUtil;
+
+
 import java.net.*;
 import java.io.*;
 import java.awt.*;
@@ -37,6 +39,8 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    public ChatPanel(ChatConnector c) {
       initUI();
       connector = c;
+      
+      
       chatTextField.addActionListener(this);
       connectDisconnect.addActionListener(this);
       whisper.addActionListener(this);
@@ -122,6 +126,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          case ChatCommandUtil.ENTER_ROOM:
          case ChatCommandUtil.WHISPER:
          case ChatCommandUtil.EXIT_ROOM:
+         case ChatCommandUtil.MSG:
             chatDispArea.append(msg + "\n", command);
             break;
          case ChatCommandUtil.USER_LIST:
@@ -136,24 +141,23 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    }
 
    private void processChangeStatus(String msg) {
-      String chatID = msg;
-       ChatUser userToChangeStatus = getUserByChatID(chatID);
-       //sendMessage(ChatCommandUtil.UNKNOWN, userToChangeStatus.getId());
-       if (userToChangeStatus != null) {
-    	   if (onOff.getText().equals("on")) {
-               userToChangeStatus.setStatus(1);
-           } else if (onOff.getText().equals("off")) {
-               userToChangeStatus.setStatus(0);
-           }
-           String msgToSend = userToChangeStatus.getName() + "상태: " + Integer.toString(userToChangeStatus.getStatus());
-           sendMessage(ChatCommandUtil.UNKNOWN, msgToSend);
-           //userList.repaint();
-       }
-   }
+	    String chatName = msg;
+	    ChatUser userToChangeStatus = getUserByChatName(chatName);
+	    if (userToChangeStatus != null) {
+	        if (userToChangeStatus.getStatus() == 0) {
+	            userToChangeStatus.setStatus(1);
+	        } else {
+	            userToChangeStatus.setStatus(0);
+	        }
+	        String msgToSend = userToChangeStatus.getName() + " 상태: " + Integer.toString(userToChangeStatus.getStatus());
+	        sendMessage(ChatCommandUtil.MSG, msgToSend);
+	        onList.repaint();
+	    }
+	}
    
-   public ChatUser getUserByChatID(String chatID) {
+   public ChatUser getUserByChatName(String chatName) {
         for (ChatUser user : chatUsers) {
-            if (user.getId().equals(chatID)) {
+            if (user.getName().equals(chatName)) {
                 return user;
             }
         }
@@ -203,13 +207,22 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          // 일반 메세지 출력
       } else if(sourceObj == connectDisconnect) { // 연결 상태면 해제, 해제 상태면 연결 실행
          if(e.getActionCommand().equals(ConnectButton.CMD_CONNECT)) {
-            if(connector.connect()) {
-               connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
-            }
-         } else {//when clicked Disconnect button
-            connector.disConnect();
-            connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
-         }
+             String ipAddress = JOptionPane.showInputDialog(this, "서버 IP 주소를 입력하세요:");
+             if (ipAddress == null) return; // 취소되었을 경우 종료
+
+             String portStr = JOptionPane.showInputDialog(this, "서버 PORT 를 입력하세요:");
+             if (portStr == null) return; // 취소되었을 경우 종료
+
+             int port = Integer.parseInt(portStr);
+
+             if (connector.connect(ipAddress, port)) {
+                 connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
+             }
+         } 
+         else {//when clicked Disconnect button
+     		connector.disConnect();
+     		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
+     	}
       } else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
     	  sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
           chatTextField.setText("");
