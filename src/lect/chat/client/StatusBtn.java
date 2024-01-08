@@ -6,7 +6,7 @@ public class StatusBtn extends JButton{
 	static final String CMD_OFFLINE = "off";
 
 	public StatusBtn() {
-		this(CMD_ONLINE);
+		this(CMD_OFFLINE);
 	}
 	public StatusBtn(String labelCmd) {
 		this(labelCmd, labelCmd);

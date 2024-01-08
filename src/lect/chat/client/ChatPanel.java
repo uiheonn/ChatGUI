@@ -8,6 +8,9 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import java.util.*;
 @SuppressWarnings("serial")
@@ -18,6 +21,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    ConnectButton connectDisconnect;
    StatusBtn onOff;
    JButton whisper;
+   ArrayList<ChatUser> list;
    private ArrayList<ChatUser> chatUsers = new ArrayList<>();
    
    // ui 추가 변수
@@ -75,7 +79,6 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       onOff = new StatusBtn();
       onOff.setBounds(230, 290, 60, 23);
       save.setBounds(397, 290, 90, 23);
-      //
       
       chatTextField.setEnabled(false);
       chatDispArea.setEditable(false);
@@ -151,7 +154,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 	        }
 	        String msgToSend = userToChangeStatus.getName() + " 상태: " + Integer.toString(userToChangeStatus.getStatus());
 	        sendMessage(ChatCommandUtil.MSG, msgToSend);
-	        onList.repaint();
+	        onList.addUserStatus(list);
 	    }
 	}
    
@@ -259,7 +262,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       //System.out.println(users);
       String [] strUsers = users.split("\\|");
       String [] nameWithIdHost;
-      ArrayList<ChatUser> list = new ArrayList<ChatUser>();
+      list = new ArrayList<ChatUser>();
       for(String strUser : strUsers) {
          nameWithIdHost = strUser.split(",");
          if(connector.getId().equals(nameWithIdHost[1])) continue;
