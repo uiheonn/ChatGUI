@@ -62,10 +62,15 @@ public class ChatClient extends WindowAdapter implements ChatConnector /* , Chat
 	public boolean connect() {
 		if(socketAvailable()) return true;
 		chatName = JOptionPane.showInputDialog(chatWindow, "Enter chat name:");
-		if(chatName == null ) return false;
-
+		
+		while(chatName.isEmpty()) {
+			chatName = JOptionPane.showInputDialog(chatWindow, "null은 사용할 수 없습니다");
+		}
+		
+		
+		
 		try {
-			socket = new Socket("172.16.0.49", 7500);
+			socket = new Socket("192.168.200.203", 7500);
 
 			for(ChatSocketListener socketListener: socketListeners) {
 				socketListener.socketConnected(socket);
