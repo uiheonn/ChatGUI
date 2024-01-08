@@ -8,40 +8,33 @@ import java.io.*;
 
 import lect.chat.client.event.*;
 import lect.chat.client.p2p.P2P;
-public class ChatClient extends WindowAdapter implements ChatConnector /* , ChatONOFF*/ {
+public class ChatClient extends WindowAdapter implements ChatConnector {
 	private Socket socket;
 	private String chatName;
 	private String id;
 	private ArrayList <ChatSocketListener> socketListeners = new ArrayList<ChatSocketListener>();
 	private JFrame chatWindow;
 	private ConnectButton connectDisconnect; 
-	
-	
+
 	ChatClient() {
-	
 		id = new java.rmi.server.UID().toString();
 		JPanel contentPanel = new JPanel(new BorderLayout());
 		contentPanel.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
 		ChatPanel chatPanel = new ChatPanel(this);
-		
-		chatPanel.setBorder(BorderFactory.createEtchedBorder());
 
+		chatPanel.setBorder(BorderFactory.createEtchedBorder());
 		ChatMessageReceiver messageReceiver = new ChatMessageReceiver(this);
 		messageReceiver.setMessageReceiver(chatPanel);
-	
-		
-	        
-	        
 		chatWindow = new JFrame("Minimal Chat - Concept Proof");
 		contentPanel.add(chatPanel);
-		
+
 		chatWindow.setContentPane(contentPanel);
 		chatWindow.setSize(530, 380);
-		
+
 		chatWindow.setLocationRelativeTo(null);
 		chatWindow.setVisible(true);
 		chatWindow.addWindowListener(this);
-		
+
 		this.addChatSocketListener(chatPanel);
 		this.addChatSocketListener(messageReceiver);
 		try {
@@ -53,27 +46,24 @@ public class ChatClient extends WindowAdapter implements ChatConnector /* , Chat
 	}	
 	@Override
 	public boolean connect(String ipAddress, int port) {
-		
-        if (socketAvailable()) return true;
 
-        chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요:");
-        if (chatName == null || chatName.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "채팅 닉네임이 입력되지 않았습니다.", "에러", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        try {
-            socket = new Socket(ipAddress, port);
-
-            for (ChatSocketListener socketListener : socketListeners) {
-                socketListener.socketConnected(socket);
-            }
-            return true;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "채팅 서버에 연결 실패", "에러", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }
-
+		if (socketAvailable()) return true;
+		chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요:");
+		if (chatName == null || chatName.trim().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "채팅 닉네임이 입력되지 않았습니다.", "에러", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		try {
+			socket = new Socket(ipAddress, port);
+			for (ChatSocketListener socketListener : socketListeners) {
+				socketListener.socketConnected(socket);
+			}
+			return true;
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "채팅 서버에 연결 실패", "에러", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	}
 	@Override
 	public void disConnect() {
 		if(socketAvailable()) {
@@ -100,13 +90,13 @@ public class ChatClient extends WindowAdapter implements ChatConnector /* , Chat
 	}
 	@Override
 	public String getName() {
-		return  chatName;
+		return chatName;
 	}
 	@Override
 	public String getId() {
 		return id;
 	}
-	
+
 	public void addChatSocketListener(ChatSocketListener socketListener) {
 		socketListeners.add(socketListener);
 	}

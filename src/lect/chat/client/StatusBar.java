@@ -10,8 +10,8 @@ public class StatusBar extends JPanel implements ChatStatusListener, FileProgres
 	private JProgressBar progBar;
 	private static StatusBar statusBar;
 	private GridBagConstraints c = new GridBagConstraints();
+	
 	private StatusBar() {
-		/*
 		super(new GridBagLayout());
 		statusText = new JLabel();
 		progBar = new JProgressBar();
@@ -21,8 +21,7 @@ public class StatusBar extends JPanel implements ChatStatusListener, FileProgres
 		c.fill = GridBagConstraints.HORIZONTAL;
 		this.add(statusText, c);
 		statusText.setText("Initialized ...");
-		//this.add(progBar, c);
-		 */
+		//this.add(progBar, c); 
 	}
 	public static StatusBar getStatusBar() {
 		if(statusBar == null) statusBar = new StatusBar();

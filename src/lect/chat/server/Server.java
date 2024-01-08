@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.*;
 public class Server implements Runnable {
 	ServerSocket ss;
+	
 	public Server() throws IOException {
 		// 소켓 초기화하고 포트 설정
 		ss = new ServerSocket(7500);

@@ -1,13 +1,14 @@
 package lect.chat.client;
 import lect.chat.client.event.*;
 import lect.chat.protocol.ChatCommandUtil;
-
-
 import java.net.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import java.util.*;
 @SuppressWarnings("serial")
@@ -18,16 +19,17 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    ConnectButton connectDisconnect;
    StatusBtn onOff;
    JButton whisper;
+   ArrayList<ChatUser> list;
    private ArrayList<ChatUser> chatUsers = new ArrayList<>();
-   
+
    // ui 추가 변수
    SaveBtn save; // 저장 버튼
    JButton init; // 초기화 버튼
-   
+
    JLabel statusField; // 상태 표시 라벨
    OnList onList; // 상태 표시 리스트
    // 
-   
+
    PrintWriter writer;
    ChatConnector connector;
    ChatONOFF chaton;
@@ -35,12 +37,12 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    private JLabel titleLabel_1;
    private JScrollPane scrollPane_1;
    private JScrollPane scrollPane_2;
-   
+
    public ChatPanel(ChatConnector c) {
       initUI();
       connector = c;
-      
-      
+
+
       chatTextField.addActionListener(this);
       connectDisconnect.addActionListener(this);
       whisper.addActionListener(this);
@@ -49,15 +51,14 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       save.addActionListener(this);
       // UI 생성
    }
-   
+
    public void clearText() {
       chatDispArea.setText("");
    }
-   
+
    private void initUI() {
       chatTextField = new JTextField();
-      chatTextField.setBounds(2, 267, 295, 21);
-
+      chatTextField.setBounds(2, 267, 295, 21); 
       chatDispArea = new ChatTextPane();
       userList = new UserList();
       onList = new OnList();
@@ -65,7 +66,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       connectDisconnect.setBounds(305, 266, 90, 23);
       whisper = new JButton("  👂  ");
       whisper.setBounds(397, 266, 90, 23);
-      
+
       // ui 변수 선언
       statusField = new JLabel(" 버튼을 통해 현재 상태를 알려주세요");
       statusField.setBounds(2, 294, 284, 15);
@@ -75,8 +76,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       onOff = new StatusBtn();
       onOff.setBounds(230, 290, 60, 23);
       save.setBounds(397, 290, 90, 23);
-      //
-      
+
       chatTextField.setEnabled(false);
       chatDispArea.setEditable(false);
       whisper.setEnabled(false);
@@ -94,15 +94,13 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       JScrollPane scrollPane = new JScrollPane(chatDispArea);
       scrollPane.setBounds(2, 20, 300, 245);
       add(scrollPane);
-     
+   
       scrollPane_1 = new JScrollPane(userList);
       scrollPane_1.setBounds(306, 20, 120, 245);
-      add(scrollPane_1);
-
+      add(scrollPane_1);   
       scrollPane_2 = new JScrollPane(onList);
       scrollPane_2.setBounds(430, 20, 60, 245);
-      add(scrollPane_2);
-
+      add(scrollPane_2);   
       add(chatTextField);
       add(connectDisconnect);
       add(whisper);
@@ -110,9 +108,9 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       add(init);
       add(save);
       add(onOff);
-      
+
    }
-   
+
    @Override
    public void messageArrived(String msg) {
       // 메세지 출력
@@ -126,11 +124,11 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          case ChatCommandUtil.ENTER_ROOM:
          case ChatCommandUtil.WHISPER:
          case ChatCommandUtil.EXIT_ROOM:
+         case ChatCommandUtil.MSG:
             chatDispArea.append(msg + "\n", command);
             break;
          case ChatCommandUtil.USER_LIST:
             displayUserList(msg);
-            displayOnList(msg);
             break;
          case ChatCommandUtil.CHANGE_STATUS:
             processChangeStatus(msg); // 상태변경
@@ -138,33 +136,30 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          default:
             break;
             }
-   }
-
+   }  
    private void processChangeStatus(String msg) {
-      String chatID = msg;
-       ChatUser userToChangeStatus = getUserByChatID(chatID);
-       //sendMessage(ChatCommandUtil.UNKNOWN, userToChangeStatus.getId());
-       if (userToChangeStatus != null) {
-    	   if (onOff.getText().equals("on")) {
-               userToChangeStatus.setStatus(1);
-           } else if (onOff.getText().equals("off")) {
-               userToChangeStatus.setStatus(0);
-           }
-           String msgToSend = userToChangeStatus.getName() + "상태: " + Integer.toString(userToChangeStatus.getStatus());
-           sendMessage(ChatCommandUtil.UNKNOWN, msgToSend);
-           //userList.repaint();
-       }
+      String chatName = msg;
+      ChatUser userToChangeStatus = getUserByChatName(chatName);
+      if (userToChangeStatus != null) {
+         if (userToChangeStatus.getStatus() == 0) {
+            userToChangeStatus.setStatus(1);
+         } else {
+            userToChangeStatus.setStatus(0);
+         }
+         String msgToSend = userToChangeStatus.getName() + " 상태: " + Integer.toString(userToChangeStatus.getStatus());
+         sendMessage(ChatCommandUtil.MSG, msgToSend);
+         onList.addUserStatus(list);
+      }
    }
-   
-   public ChatUser getUserByChatID(String chatID) {
-        for (ChatUser user : chatUsers) {
-            if (user.getId().equals(chatID)) {
-                return user;
-            }
-        }
-        return null;
-    }
 
+   public ChatUser getUserByChatName(String chatName) {
+      for (ChatUser user : chatUsers) {
+         if (user.getName().equals(chatName)) {
+            return user;
+         }
+      }
+      return null;
+    } 
    @Override
    public void socketClosed() {
       //  소켓 닫히면 호출되어 UI이 비활성하고 연결 버튼으로 변경됨
@@ -177,8 +172,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       statusField.setEnabled(false);
       onOff.setEnabled(false);
       connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
-   }
-
+   }  
    @Override
    public void socketConnected(Socket s) throws IOException {
       // 소켓 연결되면 출력스트림 생성 및 UI 활성화, 사용자 정보 초기화해 서버 전송
@@ -192,8 +186,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       save.setEnabled(true);
       init.setEnabled(true);
       onOff.setEnabled(true);
-   }
-
+   }  
    @Override
    public void actionPerformed(ActionEvent e) {
       // 메세지 입력, 연결 및 해제, 귓속말등 버튼 이벤트 클릭시 호출됨
@@ -208,30 +201,27 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          // 일반 메세지 출력
       } else if(sourceObj == connectDisconnect) { // 연결 상태면 해제, 해제 상태면 연결 실행
          if(e.getActionCommand().equals(ConnectButton.CMD_CONNECT)) {
-             String ipAddress = JOptionPane.showInputDialog(this, "서버 IP 주소를 입력하세요:");
-             if (ipAddress == null) return; // 취소되었을 경우 종료
-
-             String portStr = JOptionPane.showInputDialog(this, "서버 PORT 를 입력하세요:");
-             if (portStr == null) return; // 취소되었을 경우 종료
-
-             int port = Integer.parseInt(portStr);
-
-             if (connector.connect(ipAddress, port)) {
-                 connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
-             }
+            String ipAddress = JOptionPane.showInputDialog(this, "서버 IP 주소를 입력하세요:");
+            if (ipAddress == null) return; // 취소되었을 경우 종료  
+            String portStr = JOptionPane.showInputDialog(this, "서버 PORT 를 입력하세요:");
+            if (portStr == null) return; // 취소되었을 경우 종료 
+            int port = Integer.parseInt(portStr); 
+            if (connector.connect(ipAddress, port)) {
+               connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
+            }
          } 
          else {//when clicked Disconnect button
-     		connector.disConnect();
-     		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
-     	}
+            connector.disConnect();
+            connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
+     	   }
       } else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
     	  sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
-          chatTextField.setText("");
-          if(e.getActionCommand().equals(StatusBtn.CMD_ONLINE)) {
+         chatTextField.setText("");
+         if(e.getActionCommand().equals(StatusBtn.CMD_ONLINE)) {
             onOff.changeButton(StatusBtn.CMD_OFFLINE);
-          } else {//when clicked Disconnect button
-        	  onOff.changeButton(StatusBtn.CMD_ONLINE);
-          }
+         } else {//when clicked Disconnect button
+        	   onOff.changeButton(StatusBtn.CMD_ONLINE);
+         }
       } else if (sourceObj == whisper) {//whisper button
          ChatUser userToWhisper = (ChatUser)userList.getSelectedValue();
          if(userToWhisper == null) {
@@ -252,15 +242,14 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          save.saveline();
       }
    }
-   
-   private void displayUserList(String users) {
-      // 서버에서 사용자 목록 받아서 목록 업데이트 GroupManager에서 호출됨
 
+   private void displayUserList(String users) {
+      // 서버에서 사용자 목록 받아서 목록 업데이트 GroupManager에서 호출됨 
       //format should be like 'name1,id1,host1|name2,id2,host2|...'
       //System.out.println(users);
       String [] strUsers = users.split("\\|");
       String [] nameWithIdHost;
-      ArrayList<ChatUser> list = new ArrayList<ChatUser>();
+      list = new ArrayList<ChatUser>();
       for(String strUser : strUsers) {
          nameWithIdHost = strUser.split(",");
          if(connector.getId().equals(nameWithIdHost[1])) continue;
@@ -268,29 +257,13 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       }
       chatUsers = list;
       userList.addNewChatUsers(list);
-   }
-
-   private void displayOnList(String users) {
-      // 서버에서 사용자 목록 받아서 목록 업데이트 GroupManager에서 호출됨
-
-      //format should be like 'name1,id1,host1|name2,id2,host2|...'
-      //System.out.println(users);
-      String [] strUsers = users.split("\\|");
-      String [] nameWithIdHost;
-      ArrayList<ChatUser> list = new ArrayList<ChatUser>();
-      for(String strUser : strUsers) {
-         nameWithIdHost = strUser.split(",");
-         if(connector.getId().equals(nameWithIdHost[1])) continue;
-         list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2]));
-      }
-      chatUsers = list;
       onList.addUserStatus(list);
    }
-  
+
    private void sendMessage(char command, String msg) {
       writer.println(createMessage(command, msg));
    }
-   
+
    private String createMessage(char command, String msg) {
       msgBuilder.delete(0, msgBuilder.length());
       msgBuilder.append("[");
@@ -298,6 +271,5 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       msgBuilder.append("]");
       msgBuilder.append(msg);
       return msgBuilder.toString();
-      
    }
 }

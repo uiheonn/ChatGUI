@@ -18,25 +18,25 @@ public class ChatTextPane extends JTextPane implements FileProgressListener{
 	private int maxLines = 40;
 	private boolean recordRemovedMsg = true;
 	private JProgressBar curActiveProgressBar;
+	
 	public ChatTextPane() {
 		// 텍스트 스타일 속성 설정, 귓속말 핑크, 알림 파랑 등등
 		StyleContext sc = StyleContext.getDefaultStyleContext();
-        normalAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.DARK_GRAY);
+		normalAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.DARK_GRAY);	
+		//attSet = sc.addAttribute(attSet, StyleConstants.FontFamily, "Lucida Console");
+		normalAttrSet = sc.addAttribute(normalAttrSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
 
-        //attSet = sc.addAttribute(attSet, StyleConstants.FontFamily, "Lucida Console");
-        normalAttrSet = sc.addAttribute(normalAttrSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-        
-        sc = new StyleContext();
-        enterExitAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE.darker());
-        enterExitAttrSet = sc.addAttribute(enterExitAttrSet, StyleConstants.FontFamily, "Lucida Console");
-        enterExitAttrSet = sc.addAttribute(enterExitAttrSet, StyleConstants.Italic, true);
-        enterExitAttrSet = sc.addAttribute(enterExitAttrSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-        
-        sc = new StyleContext();
-        whisperAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.PINK);
-      //whisperAttrSet = sc.addAttribute(whisperAttrSet, StyleConstants.FontFamily, "Lucida Console");
-        whisperAttrSet = sc.addAttribute(whisperAttrSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-        FileReceiver.addFileProgressListener(this);
+		sc = new StyleContext();
+		enterExitAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE.darker());
+		enterExitAttrSet = sc.addAttribute(enterExitAttrSet, StyleConstants.FontFamily, "Lucida Console");
+		enterExitAttrSet = sc.addAttribute(enterExitAttrSet, StyleConstants.Italic, true);
+		enterExitAttrSet = sc.addAttribute(enterExitAttrSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+		sc = new StyleContext();
+		whisperAttrSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.PINK);
+		//whisperAttrSet = sc.addAttribute(whisperAttrSet, StyleConstants.FontFamily, "Lucida Console");
+		whisperAttrSet = sc.addAttribute(whisperAttrSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+		FileReceiver.addFileProgressListener(this);
 	}
 	public void append(String msg, char command) {
 		// 메세지의 유형에 따라 스타일 적용
@@ -51,9 +51,9 @@ public class ChatTextPane extends JTextPane implements FileProgressListener{
 				break;
 			case ChatCommandUtil.NORMAL:
 			case ChatCommandUtil.CHANGE_STATUS:
-				default:
-					attrset = normalAttrSet;
-					break;
+			default:
+				attrset = normalAttrSet;
+				break;
 		}
 		// 메세지 길면 지우고 지운 부분 파일에 저장
 		Document doc = getDocument();
@@ -76,7 +76,7 @@ public class ChatTextPane extends JTextPane implements FileProgressListener{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setRecordRemovedMsg(boolean rrm) {
 		recordRemovedMsg = rrm;
 	}
@@ -122,6 +122,5 @@ public class ChatTextPane extends JTextPane implements FileProgressListener{
 	@Override
 	public void progressFinished() {
 		// TODO Auto-generated method stub
-		
 	}
-}
+}	
