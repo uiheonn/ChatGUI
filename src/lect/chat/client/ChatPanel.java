@@ -126,7 +126,6 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
             break;
          case ChatCommandUtil.USER_LIST:
             displayUserList(msg);
-            displayOnList(msg);
             break;
          case ChatCommandUtil.CHANGE_STATUS:
             processChangeStatus(msg); // 상태변경
@@ -255,22 +254,6 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       }
       chatUsers = list;
       userList.addNewChatUsers(list);
-   }
-
-   private void displayOnList(String users) {
-      // 서버에서 사용자 목록 받아서 목록 업데이트 GroupManager에서 호출됨
-
-      //format should be like 'name1,id1,host1|name2,id2,host2|...'
-      //System.out.println(users);
-      String [] strUsers = users.split("\\|");
-      String [] nameWithIdHost;
-      ArrayList<ChatUser> list = new ArrayList<ChatUser>();
-      for(String strUser : strUsers) {
-         nameWithIdHost = strUser.split(",");
-         if(connector.getId().equals(nameWithIdHost[1])) continue;
-         list.add(new ChatUser(nameWithIdHost[0], nameWithIdHost[1], nameWithIdHost[2]));
-      }
-      chatUsers = list;
       onList.addUserStatus(list);
    }
   
