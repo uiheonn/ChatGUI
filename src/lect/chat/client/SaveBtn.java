@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.swing.*;
 @SuppressWarnings("serial")
 public class SaveBtn extends JButton{
-	static final String SAVE_FILE = "   📂   ";
+	static final String SAVE_FILE = "   💾   ";
 	private ChatTextPane chatDispArea;
 
 	public SaveBtn(ChatTextPane chatDispArea) {

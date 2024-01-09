@@ -25,7 +25,8 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		chatPanel.setBorder(BorderFactory.createEtchedBorder());
 		ChatMessageReceiver messageReceiver = new ChatMessageReceiver(this);
 		messageReceiver.setMessageReceiver(chatPanel);
-		chatWindow = new JFrame("Minimal Chat - Concept Proof");
+	        
+		chatWindow = new JFrame("카카오스쿨톡");
 		contentPanel.add(chatPanel);
 
 		chatWindow.setContentPane(contentPanel);
@@ -43,27 +44,31 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-	}	
+	}
 	@Override
 	public boolean connect(String ipAddress, int port) {
-
 		if (socketAvailable()) return true;
-		chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요:");
-		if (chatName == null || chatName.trim().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "채팅 닉네임이 입력되지 않았습니다.", "에러", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		try {
-			socket = new Socket(ipAddress, port);
-			for (ChatSocketListener socketListener : socketListeners) {
-				socketListener.socketConnected(socket);
-			}
-			return true;
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "채팅 서버에 연결 실패", "에러", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-	}
+		
+		chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요");
+        
+        while (chatName == null || chatName.trim().isEmpty()) { // null이 아닐 때까지 입력을 받는다
+            JOptionPane.showMessageDialog(null, "채팅 닉네임이 입력되지 않았습니다.", "에러", JOptionPane.ERROR_MESSAGE);
+        	chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요");
+        }
+        
+        try {
+            socket = new Socket(ipAddress, port);
+
+            for (ChatSocketListener socketListener : socketListeners) {
+                socketListener.socketConnected(socket);
+            }
+            return true;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "채팅 서버에 연결 실패", "에러", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
 	@Override
 	public void disConnect() {
 		if(socketAvailable()) {

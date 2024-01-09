@@ -28,6 +28,10 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
 
    JLabel statusField; // 상태 표시 라벨
    OnList onList; // 상태 표시 리스트
+   
+   String ipAddress;
+   String portStr;
+   
    // 
 
    PrintWriter writer;
@@ -85,12 +89,15 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       statusField.setEnabled(false);
       onOff.setEnabled(false);
       setLayout(null);
-      JLabel titleLabel = new JLabel("Message Received", JLabel.CENTER);
+      JLabel titleLabel = new JLabel("채팅방", JLabel.CENTER);
       titleLabel.setBounds(77, 2, 142, 15);
       add(titleLabel);
-      titleLabel_1 = new JLabel("List of Users", JLabel.CENTER);
+      titleLabel_1 = new JLabel("사용자 목록", JLabel.CENTER);
       titleLabel_1.setBounds(320, 2, 84, 15);
       add(titleLabel_1);
+      JLabel titleLabel2 = new JLabel("상태", JLabel.CENTER);
+      titleLabel2.setBounds(416, 2, 84, 15);
+      add(titleLabel2);
       JScrollPane scrollPane = new JScrollPane(chatDispArea);
       scrollPane.setBounds(2, 20, 300, 245);
       add(scrollPane);
@@ -133,10 +140,16 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          case ChatCommandUtil.CHANGE_STATUS:
             processChangeStatus(msg); // 상태변경
             break;
+         case ChatCommandUtil.DUPLICATE_USER: // 동일한 사용자가 있는 경우
+        	JOptionPane.showMessageDialog(null, "동일한 사용자가 존재합니다.", "에러", JOptionPane.ERROR_MESSAGE);
+        	connector.disConnect(); // 소켓을 끊고
+        	connector.connect(ipAddress, Integer.parseInt(portStr)); // 다시 채팅 입력을 시도
+        	break;
          default:
             break;
-            }
-   }  
+         }
+   }
+   
    private void processChangeStatus(String msg) {
       String chatName = msg;
       ChatUser userToChangeStatus = getUserByChatName(chatName);
@@ -159,7 +172,8 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          }
       }
       return null;
-    } 
+   }
+   
    @Override
    public void socketClosed() {
       //  소켓 닫히면 호출되어 UI이 비활성하고 연결 버튼으로 변경됨
@@ -200,20 +214,20 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          chatTextField.setText(""); // 입력창 비우기
          // 일반 메세지 출력
       } else if(sourceObj == connectDisconnect) { // 연결 상태면 해제, 해제 상태면 연결 실행
-         if(e.getActionCommand().equals(ConnectButton.CMD_CONNECT)) {
-            String ipAddress = JOptionPane.showInputDialog(this, "서버 IP 주소를 입력하세요:");
-            if (ipAddress == null) return; // 취소되었을 경우 종료  
-            String portStr = JOptionPane.showInputDialog(this, "서버 PORT 를 입력하세요:");
-            if (portStr == null) return; // 취소되었을 경우 종료 
-            int port = Integer.parseInt(portStr); 
-            if (connector.connect(ipAddress, port)) {
-               connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
-            }
-         } 
+    	 if(e.getActionCommand().equals(ConnectButton.CMD_CONNECT)) {
+	       	ipAddress = JOptionPane.showInputDialog(this, "서버 IP 주소를 입력하세요:");
+	        if (ipAddress == null) return; // 취소되었을 경우 종료  
+	        portStr = JOptionPane.showInputDialog(this, "서버 PORT 를 입력하세요:");
+	        if (portStr == null) return; // 취소되었을 경우 종료 
+	        int port = Integer.parseInt(portStr); 
+	        if (connector.connect(ipAddress, port)) {
+	           connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
+	        }
+         }
          else {//when clicked Disconnect button
             connector.disConnect();
             connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
-     	   }
+     	 }
       } else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
     	  sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
          chatTextField.setText("");

@@ -10,6 +10,7 @@ public class ChatCommandUtil {
 	public static final char UNKNOWN = 'z';
 	public static final char INITIALIZE = 'i';
 	public static final char CHANGE_STATUS = 'r';
+	public static final char DUPLICATE_USER = 'w'; // 동일한 사용자를 찾는 프로토콜
 	public static final char MSG = 'g';
 	private ChatCommandUtil(){}
 	public static char getCommandType(String msg) {

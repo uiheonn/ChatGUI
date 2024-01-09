@@ -16,8 +16,10 @@ public class GroupManager {
 		clientGroup.remove(handler);
 		System.out.println("Active clients count: " + clientGroup.size());
 		// 퇴장 알림
-		for(MessageHandler mh: clientGroup) {
-			mh.sendMessage(createMessage(ChatCommandUtil.EXIT_ROOM, handler.getName() + " has just left chat room"));
+		if(handler.getName() != null) { // 닉네임이 동일한 사용자가 접속한 경우 다른 사용자에게 메시지를 전달하지 않음
+			for(MessageHandler mh: clientGroup) {
+				mh.sendMessage(createMessage(ChatCommandUtil.EXIT_ROOM, handler.getName() + " has just left chat room"));
+			}
 		}
 	}
 	public static void broadcastMessageAllClient(String msg) {
@@ -82,5 +84,8 @@ public class GroupManager {
 		for(MessageHandler handler: clientGroup) {
 			handler.sendMessage(createMessage(ChatCommandUtil.CHANGE_STATUS, msg));
 		}
+	}
+	public static Vector<MessageHandler> getClientGroup() { // ClientHandler.java에서 사용자 목록을 확인하기 위해 사용
+		return clientGroup;
 	}
 }

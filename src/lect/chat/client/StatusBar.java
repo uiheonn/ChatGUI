@@ -21,7 +21,7 @@ public class StatusBar extends JPanel implements ChatStatusListener, FileProgres
 		c.fill = GridBagConstraints.HORIZONTAL;
 		this.add(statusText, c);
 		statusText.setText("Initialized ...");
-		//this.add(progBar, c); 
+		//this.add(progBar, c);
 	}
 	public static StatusBar getStatusBar() {
 		if(statusBar == null) statusBar = new StatusBar();

@@ -1,4 +1,3 @@
-
 package lect.chat.server;
 import java.net.*;
 import java.io.*;
@@ -60,7 +59,17 @@ public class ClientHandler implements Runnable, MessageHandler {
 				if(msg == null) {
 					break;
 				}
+				
+				// 존재하는 닉네임인지 확인
+				char com = ChatCommandUtil.getCommandType(msg);
+				if(com == ChatCommandUtil.INIT_ALIAS && handleInitAliasCommand(msg) == true) {
+					showErrorMessage("동일한 메시지를 입력했습니다");
+					break;
+				}
+				//
+				
 				processMessageByCommandType(msg); // 명령어 타입에 따라 메시지를 처리
+				
 				System.out.println("lineRead: " + msg);
 				//GroupManager.broadcastMessage(msg);
 			}
@@ -74,6 +83,22 @@ public class ClientHandler implements Runnable, MessageHandler {
 		System.out.println("Terminating ClientHandler");
 	}
 	
+	private void showErrorMessage(String message) { // 동일한 사용자가 존재함을 스트림을 통해 전달
+	  sendMessage(GroupManager.createMessage(ChatCommandUtil.DUPLICATE_USER, message));
+	}
+	
+	public boolean handleInitAliasCommand(String msg) { // clientGroup에 동일한 닉네임이 있는지 확인
+	  String nameWithId1[] = msg.split("\\|");
+	  String chatName1 = nameWithId1[0].substring(3);
+	  
+	  for (MessageHandler mh : GroupManager.getClientGroup()) {
+	      if (chatName1.equals(mh.getName())) {
+	          return true; // 동일한 닉네임이 존재하면 메서드를 종료합니다.
+	      }
+	  }
+	  return false;
+	}
+
 	public void processMessageByCommandType(String msg) {
 		char command = ChatCommandUtil.getCommandType(msg);
 		msg = msg.replaceFirst("\\[{1}[a-z]\\]{1}", "");
