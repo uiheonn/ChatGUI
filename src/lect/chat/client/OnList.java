@@ -1,41 +1,36 @@
 package lect.chat.client;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
-public class OnList extends MyList{
-	public OnList() {
-		super();
-		
-	}
+public class OnList extends MyList {
+	class OnListModel extends DefaultListModel<Integer> {
+        public void fireContentsChanged(JList list, int index0, int index1) {
+            super.fireContentsChanged(list, index0, index1);
+        }
+    }
 	
-	public void addUserStatus(ArrayList <ChatUser> users) {
-		// µ¥ÀÌÅÍ ¹Ş¾Æ¼­ ¸ñ·Ï¿¡ ÇÏ³ª¾¿ Ãß°¡
-		DefaultListModel newModel = new DefaultListModel();
-		for(ChatUser user: users) {
-			newModel.addElement(user.status);
-		}
-		setModel(newModel);
-	}
-	
-	public void addNewChatUsers(ArrayList <ChatUser> users) {
-		// µ¥ÀÌÅÍ ¹Ş¾Æ¼­ ¸ñ·Ï¿¡ ÇÏ³ª¾¿ Ãß°¡
-		DefaultListModel newModel = new DefaultListModel();
-		for(ChatUser user: users) {
-			newModel.addElement(user);
-		}
-		setModel(newModel);
-	}
-	
-	public ChatUser getUserByChatName(String chatName) {
-		for (int i = 0; i < getModel().getSize(); i++) {
-	        ChatUser user = (ChatUser) getModel().getElementAt(i);
-	        if (user.getName().equals(chatName)) {
-	            return user;
-	        }
-	    }
-	    return null;
-	}
-	
+    public OnList() {
+        super();
+    }
+
+    public void addUserStatus(ArrayList<ChatUser> users) {
+        // ë°ì´í„° ë°›ì•„ì„œ ëª©ë¡ì— í•˜ë‚˜ì”© ì¶”ê°€
+        DefaultListModel newModel = new DefaultListModel();
+        for (ChatUser user : users) {
+            if (user.status == 1) {
+            	newModel.addElement("     OFF");
+            } else {
+            	newModel.addElement("     ON");
+            }
+        }
+        setModel(newModel);
+    }
+ 
 }

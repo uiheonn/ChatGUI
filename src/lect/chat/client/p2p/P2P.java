@@ -45,5 +45,4 @@ public class P2P implements Runnable {
 			try { if(ss != null) ss.close(); } catch(Exception e) {}
 		}
 	}
-
 }

@@ -8,27 +8,25 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-
 import lect.chat.client.UserList.UserListTransferHandler;
 
 public class MyList extends JList {
 	public MyList(){
-		// »ç¿ëÀÚ ¸ñ·Ï Ç¥½Ã¸¦ À§ÇÔ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 		super(new DefaultListModel());
-		this.setCellRenderer(new CellRenderer()); // ¸ñ·Ï ½ºÅ¸ÀÏ ¼³Á¤
+		this.setCellRenderer(new CellRenderer()); // ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		DefaultListModel model = (DefaultListModel) getModel();
 		model.addElement(null);
 	}
 	
 	class CellRenderer extends JLabel implements ListCellRenderer {
-		// »ç¿ëÀÚ ¸ñ·Ï ½ºÅ¸ÀÏ ¼³Á¤ ¼±ÅÃµÈ°Å¶û ¾ÈµÈ°Å ¹è°æ»ö ¼³Á¤
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÃµÈ°Å¶ï¿½ ï¿½ÈµÈ°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		public CellRenderer() {
 			setOpaque(true);
 		}
 
 		public Component getListCellRendererComponent(
-				JList list, Object value, int index, 
-				boolean isSelected, boolean cellHasFocus) {
+			JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			setText(value == null? "": value.toString());
 			if (isSelected) {
                 setBackground(list.getSelectionBackground());

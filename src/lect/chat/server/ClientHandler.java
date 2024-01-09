@@ -124,14 +124,13 @@ public class ClientHandler implements Runnable, MessageHandler {
 			GroupManager.sendWhisper(this, toId, String.format("%s: %s", chatName, msgToWhisper));
 			break;
 		case ChatCommandUtil.CHANGE_STATUS:
-		    String status = msg.substring(msg.indexOf('|') + 1);
-		    GroupManager.broadcastMessageAllClientStatus(id);
-
+		    GroupManager.broadcastMessageAllClientStatus(chatName);
+		case ChatCommandUtil.MSG:
+			GroupManager.broadcastMessageAllClientStatus(msg);
             break;
-			default:
-				System.out.printf("ChatCommand %c \n", command);
-				break;
-			
+		default:
+			System.out.printf("ChatCommand %c \n", command);
+			break;	
 		}
 	}
 }
