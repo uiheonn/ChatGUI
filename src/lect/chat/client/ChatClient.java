@@ -56,7 +56,6 @@ public class ChatClient extends WindowAdapter implements ChatConnector {
         	chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요");
         }
         
-        
         try {
             socket = new Socket(ipAddress, port);
 
