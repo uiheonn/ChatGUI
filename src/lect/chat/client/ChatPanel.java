@@ -1,6 +1,8 @@
 package lect.chat.client;
 import lect.chat.client.event.*;
 import lect.chat.protocol.ChatCommandUtil;
+
+
 import java.net.*;
 import java.io.*;
 import java.awt.*;
@@ -19,11 +21,15 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    private ArrayList<ChatUser> chatUsers = new ArrayList<>();
    
    // ui 추가 변수
-   JButton save; // 저장 버튼
+   SaveBtn save; // 저장 버튼
    JButton init; // 초기화 버튼
    
    JLabel statusField; // 상태 표시 라벨
    OnList onList; // 상태 표시 리스트
+   
+   String ipAddress;
+   String portStr;
+   
    // 
    
    PrintWriter writer;
@@ -37,6 +43,8 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
    public ChatPanel(ChatConnector c) {
       initUI();
       connector = c;
+      
+      
       chatTextField.addActionListener(this);
       connectDisconnect.addActionListener(this);
       whisper.addActionListener(this);
@@ -67,7 +75,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       statusField.setBounds(2, 294, 284, 15);
       init = new JButton("   🔄   ");
       init.setBounds(306, 290, 90, 23);
-      save = new JButton("   📂   ");
+      save = new SaveBtn(chatDispArea);
       onOff = new StatusBtn();
       onOff.setBounds(230, 290, 60, 23);
       save.setBounds(397, 290, 90, 23);
@@ -81,12 +89,15 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       statusField.setEnabled(false);
       onOff.setEnabled(false);
       setLayout(null);
-      JLabel titleLabel = new JLabel("Message Received", JLabel.CENTER);
+      JLabel titleLabel = new JLabel("채팅방", JLabel.CENTER);
       titleLabel.setBounds(77, 2, 142, 15);
       add(titleLabel);
-      titleLabel_1 = new JLabel("List of Users", JLabel.CENTER);
+      titleLabel_1 = new JLabel("사용자 목록", JLabel.CENTER);
       titleLabel_1.setBounds(320, 2, 84, 15);
       add(titleLabel_1);
+      JLabel titleLabel2 = new JLabel("상태", JLabel.CENTER);
+      titleLabel2.setBounds(416, 2, 84, 15);
+      add(titleLabel2);
       JScrollPane scrollPane = new JScrollPane(chatDispArea);
       scrollPane.setBounds(2, 20, 300, 245);
       add(scrollPane);
@@ -131,21 +142,27 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          case ChatCommandUtil.CHANGE_STATUS:
             processChangeStatus(msg); // 상태변경
             break;
+         case ChatCommandUtil.DUPLICATE_USER: // 동일한 사용자가 있는 경우
+        	JOptionPane.showMessageDialog(null, "동일한 사용자가 존재합니다.", "에러", JOptionPane.ERROR_MESSAGE);
+        	connector.disConnect(); // 소켓을 끊고
+        	connector.connect(ipAddress, Integer.parseInt(portStr)); // 다시 채팅 입력을 시도
+        	break;
          default:
             break;
             }
    }
+  
 
    private void processChangeStatus(String msg) {
       String chatID = msg;
        ChatUser userToChangeStatus = getUserByChatID(chatID);
        //sendMessage(ChatCommandUtil.UNKNOWN, userToChangeStatus.getId());
        if (userToChangeStatus != null) {
-    	   if (onOff.getText().equals(StatusBtn.CMD_ONLINE)) {
-    		    userToChangeStatus.setStatus(1);
-    		} else {
-    		    userToChangeStatus.setStatus(0);
-    		}
+    	   if (onOff.getText().equals("on")) {
+               userToChangeStatus.setStatus(1);
+           } else if (onOff.getText().equals("off")) {
+               userToChangeStatus.setStatus(0);
+           }
            String msgToSend = userToChangeStatus.getName() + "상태: " + Integer.toString(userToChangeStatus.getStatus());
            sendMessage(ChatCommandUtil.UNKNOWN, msgToSend);
            //userList.repaint();
@@ -204,13 +221,22 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          // 일반 메세지 출력
       } else if(sourceObj == connectDisconnect) { // 연결 상태면 해제, 해제 상태면 연결 실행
          if(e.getActionCommand().equals(ConnectButton.CMD_CONNECT)) {
-            if(connector.connect()) {
-               connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
-            }
-         } else {//when clicked Disconnect button
-            connector.disConnect();
-            connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
-         }
+             ipAddress = JOptionPane.showInputDialog(this, "서버 IP 주소를 입력하세요:");
+             if (ipAddress == null) return; // 취소되었을 경우 종료
+
+             portStr = JOptionPane.showInputDialog(this, "서버 PORT 를 입력하세요:");
+             if (portStr == null) return; // 취소되었을 경우 종료
+
+             int port = Integer.parseInt(portStr);
+
+             if (connector.connect(ipAddress, port)) {
+                 connectDisconnect.changeButtonStatus(ConnectButton.CMD_DISCONNECT);
+             }
+         } 
+         else {//when clicked Disconnect button
+     		connector.disConnect();
+     		connectDisconnect.changeButtonStatus(ConnectButton.CMD_CONNECT);
+     	}
       } else if(sourceObj == onOff) { // 자리비움 , 온라인 상태표시 실행
     	  sendMessage(ChatCommandUtil.CHANGE_STATUS, "changeStatus");
           chatTextField.setText("");
@@ -236,7 +262,7 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
          sendMessage(ChatCommandUtil.INITIALIZE, msgToSend);
          clearText();
       } else if (sourceObj == save){
-         saveline();
+         save.saveline();
       }
    }
    
@@ -287,67 +313,4 @@ public class ChatPanel extends JPanel implements MessageReceiver, ActionListener
       return msgBuilder.toString();
       
    }
-//   private void saveChatToFile() {
-//        // 현재 채팅 내용을 파일로 저장
-//        String chatContent = chatDispArea.getSelectedText();
-//
-//        // 파일 다이얼로그를 통해 저장할 경로를 선택
-//        JFileChooser fileChooser = new JFileChooser();
-//        int userChoice = fileChooser.showSaveDialog(null);
-//
-//        if (userChoice == JFileChooser.APPROVE_OPTION) {
-//            try {
-//                // 선택한 파일에 채팅 내용 저장
-//                String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-//                try (FileWriter writer = new FileWriter(filePath)) {
-//                    writer.write(chatContent);
-//                }
-//                JOptionPane.showMessageDialog(null, "Success");
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//                JOptionPane.showMessageDialog(null, "Error");
-//            }
-//        }
-//    }
-     private void saveline() {
-           String startLineStr = JOptionPane.showInputDialog(null, "Start line:");
-           String endLineStr = JOptionPane.showInputDialog(null, "End line:");
-
-           try {
-               int startLine = startLineStr.isEmpty() ? 1 : Integer.parseInt(startLineStr);
-                int endLine = endLineStr.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(endLineStr);
-               savetext(startLine, endLine);
-           } catch (NumberFormatException e) {
-               JOptionPane.showMessageDialog(null, "Error");
-           }
-       }
-
-     private void savetext(int startLine, int endLine) {
-           // 현재 채팅 내용을 라인별로 파일로 저장
-           String chatContent = chatDispArea.getText();
-
-           // 파일 다이얼로그를 통해 저장할 경로를 선택하도록 할 수도 있습니다.
-           JFileChooser fileChooser = new JFileChooser();
-           int userChoice = fileChooser.showSaveDialog(null);
-
-           if (userChoice == JFileChooser.APPROVE_OPTION) {
-               try {
-                   // 선택한 파일에 지정한 범위의 라인을 저장
-                   String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                   if (!filePath.toLowerCase().endsWith(".txt")) {
-                       filePath += ".txt"; // 파일 확장자가 .txt로 끝나지 않으면 추가
-                   }
-                   try (FileWriter writer = new FileWriter(filePath)) {
-                       String[] lines = chatContent.split("\\n");
-                       for (int i = startLine - 1; i < endLine && i < lines.length; i++) {
-                           writer.write(lines[i] + System.lineSeparator());
-                       }
-                   }
-                   JOptionPane.showMessageDialog(null, "저장 완료");
-               } catch (IOException ex) {
-                   ex.printStackTrace();
-                   JOptionPane.showMessageDialog(null, "실패");
-               }
-           }
-       }
 }

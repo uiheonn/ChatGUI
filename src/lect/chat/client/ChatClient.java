@@ -14,6 +14,9 @@ public class ChatClient extends WindowAdapter implements ChatConnector /* , Chat
 	private String id;
 	private ArrayList <ChatSocketListener> socketListeners = new ArrayList<ChatSocketListener>();
 	private JFrame chatWindow;
+	private ConnectButton connectDisconnect;
+	PrintWriter writer;
+	
 	ChatClient() {
 		id = new java.rmi.server.UID().toString();
 		JPanel contentPanel = new JPanel(new BorderLayout());
@@ -21,15 +24,11 @@ public class ChatClient extends WindowAdapter implements ChatConnector /* , Chat
 		ChatPanel chatPanel = new ChatPanel(this);
 		
 		chatPanel.setBorder(BorderFactory.createEtchedBorder());
-		/*
-		StatusBar statusBar = StatusBar.getStatusBar();
-		statusBar.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1, 2, 2, 2)));
-		contentPanel.add(statusBar, BorderLayout.SOUTH);
-		*/
+
 		ChatMessageReceiver messageReceiver = new ChatMessageReceiver(this);
 		messageReceiver.setMessageReceiver(chatPanel);
-	
-		chatWindow = new JFrame("Minimal Chat - Concept Proof");
+	        
+		chatWindow = new JFrame("카카오스쿨톡");
 		contentPanel.add(chatPanel);
 		
 		chatWindow.setContentPane(contentPanel);
@@ -47,40 +46,32 @@ public class ChatClient extends WindowAdapter implements ChatConnector /* , Chat
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-	}	
-//	@Override
-//	public boolean on() {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//	@Override
-//	public void off() {
-//		// TODO Auto-generated method stub
-//		
-//	}
-	@Override
-	public boolean connect() {
-		if(socketAvailable()) return true;
-		chatName = JOptionPane.showInputDialog(chatWindow, "Enter chat name:");
-		
-		while(chatName.isEmpty()) {
-			chatName = JOptionPane.showInputDialog(chatWindow, "null은 사용할 수 없습니다");
-		}
-		
-		
-		
-		try {
-			socket = new Socket("192.168.200.203", 7500);
-
-			for(ChatSocketListener socketListener: socketListeners) {
-				socketListener.socketConnected(socket);
-			}
-			return true;
-		} catch(IOException e) {
-			JOptionPane.showMessageDialog(null, "Failed to connect chat server", "Eror", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
 	}
+	@Override
+	public boolean connect(String ipAddress, int port) {
+		
+		if (socketAvailable()) return true;
+		
+		chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요");
+        
+        while (chatName == null || chatName.trim().isEmpty()) { // null이 아닐 때까지 입력을 받는다
+            JOptionPane.showMessageDialog(null, "채팅 닉네임이 입력되지 않았습니다.", "에러", JOptionPane.ERROR_MESSAGE);
+        	chatName = JOptionPane.showInputDialog(chatWindow, "채팅 닉네임을 입력하세요");
+        }
+        
+        
+        try {
+            socket = new Socket(ipAddress, port);
+
+            for (ChatSocketListener socketListener : socketListeners) {
+                socketListener.socketConnected(socket);
+            }
+            return true;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "채팅 서버에 연결 실패", "에러", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
 
 	@Override
 	public void disConnect() {
