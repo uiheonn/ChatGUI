@@ -9,8 +9,7 @@
 - 커뮤니케이션 : 오프라인 회의, Discord 화상 회의, Notion
 
 ### 1. 요구사항 정의서 - 기능적 요구사항
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/0639584f-7c80-403f-bf46-3a049d85ba04/db462269-ff29-4158-a83c-4be028ec31d9/Untitled.png)
+![스크린샷 2024-01-27 190958](https://github.com/uiheonn/ChatGUI/assets/108711488/d681d73e-0e3a-4359-a20b-b978a9432845)
 
 ### 1-1. 요구사항 정의서 - 비기능적 요구사항
 
